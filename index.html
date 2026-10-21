@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Каникулы</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;800&family=Onest:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: showreel first, full-bleed. White air, lowercase Unbounded headlines, one signal-red band. Palette from the road sign. */
+:root {
+  --paper: #ffffff;
+  --ink: #141414;
+  --muted: #66666c;
+  --line: #e6e6e9;
+  --soft: #f4f4f5;
+  --red: #e3191c;
+  --on-red: #ffffff;
+  --t-yellow: #ffd21f;
+  --t-blue: #2457ff;
+  --t-green: #0f9d63;
+  --t-grey: #ececee;
+  --t-black: #141414;
+  --reel-bg: #0e0e0f;
+  --reel-fg: #ffffff;
+  --display: "Unbounded", "Arial Black", system-ui, sans-serif;
+  --body: "Onest", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #121314; --ink: #f2f2f0; --muted: #9c9ca2; --line: #2a2b2e; --soft: #1b1c1e;
+    --red: #ff3b2f; --t-grey: #2a2b2e; --t-black: #000000; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #121314; --ink: #f2f2f0; --muted: #9c9ca2; --line: #2a2b2e; --soft: #1b1c1e;
+  --red: #ff3b2f; --t-grey: #2a2b2e; --t-black: #000000; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+a { color: inherit; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+p { margin: 0; }
+section { padding-block: clamp(64px, 10vw, 128px); }
+.sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: clamp(32px, 5vw, 56px); }
+.sec-head h2 { font-size: clamp(36px, 6vw, 72px); line-height: 1; }
+
+/* header */
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--paper); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; }
+.brand .logo { width: 42px; height: 34px; flex: none; background: currentColor; -webkit-mask: url(media/logo.png) center / contain no-repeat; mask: url(media/logo.png) center / contain no-repeat; }
+nav.links { display: flex; gap: clamp(12px, 2.4vw, 28px); font-size: 15px; }
+nav.links a { text-decoration: none; color: var(--muted); }
+nav.links a:hover { color: var(--ink); }
+@media (max-width: 720px) { nav.links .opt { display: none; } }
+@media (max-width: 420px) { .brand span { display: none; } }
+
+/* showreel */
+.reel { position: relative; background: var(--reel-bg); color: var(--reel-fg); overflow: hidden; }
+.reel-frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; max-height: 78vh; min-height: 300px; }
+.reel video { opacity: 0; transition: opacity .6s; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.reel .stand { position: absolute; inset: 0; }
+.slide { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: flex-end; padding: clamp(16px, 4vw, 48px); opacity: 0; animation: reel 18s infinite; }
+.slide b { font-family: var(--display); font-weight: 800; font-size: clamp(90px, 22vw, 320px); line-height: .8; letter-spacing: -0.05em; }
+.slide:nth-child(1){ background: var(--t-yellow); color: #141414; animation-delay: 0s; }
+.slide:nth-child(2){ background: #2457ff; color: #fff; animation-delay: 3s; }
+.slide:nth-child(3){ background: #e3191c; color: #fff; animation-delay: 6s; }
+.slide:nth-child(4){ background: #141414; color: #fff; animation-delay: 9s; }
+.slide:nth-child(5){ background: #0f9d63; color: #fff; animation-delay: 12s; }
+.slide:nth-child(6){ background: #ececee; color: #141414; animation-delay: 15s; }
+@keyframes reel { 0% { opacity: 0; transform: scale(1.04); } 2% { opacity: 1; } 16.6% { opacity: 1; transform: scale(1); } 18.6% { opacity: 0; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .slide { animation: none; } .slide:nth-child(1) { opacity: 1; } }
+.reel-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.0) 35%, rgba(0,0,0,.55) 100%); pointer-events: none; }
+.reel-over { position: absolute; left: 0; right: 0; bottom: 0; }
+.reel-over .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-block: clamp(16px, 3vw, 32px); }
+.reel-tag { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; background: rgba(0,0,0,.55); color: #fff; padding: 8px 12px; border-radius: 999px; }
+.reel-tag i { width: 8px; height: 8px; border-radius: 50%; background: #ff3b2f; animation: blink 1.4s infinite; }
+@keyframes blink { 50% { opacity: .25; } }
+@media (prefers-reduced-motion: reduce) { .reel-tag i { animation: none; } }
+.reel-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { font-family: var(--body); font-weight: 600; font-size: 15px; border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+.btn-light { background: #fff; color: #141414; }
+.btn-red { background: var(--red); color: var(--on-red); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+
+/* intro */
+.intro { padding-block: clamp(48px, 7vw, 96px) clamp(40px, 6vw, 80px); }
+.intro-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 72px); align-items: end; }
+@media (max-width: 860px) { .intro-grid { grid-template-columns: 1fr; } }
+.intro h1 { font-size: clamp(40px, 7.4vw, 104px); line-height: .95; font-weight: 800; }
+.intro h1 em { font-style: normal; color: var(--red); }
+.intro .lead { font-size: clamp(18px, 1.6vw, 21px); max-width: 34ch; display: grid; gap: 20px; }
+.intro .lead .reel-btns { margin-top: 4px; }
+
+/* numbers */
+.band { background: var(--red); color: var(--on-red); padding-block: clamp(48px, 7vw, 88px); }
+.band .mono { color: var(--on-red); opacity: .85; }
+.nums { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px 24px; margin-top: 28px; }
+@media (max-width: 860px) { .nums { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.nums b { display: block; font-family: var(--display); font-weight: 800; font-size: clamp(40px, 5.6vw, 76px); line-height: 1; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; }
+.nums span { display: block; margin-top: 10px; font-size: 15px; max-width: 22ch; }
+.band-note { margin-top: 32px; font-size: 14px; opacity: .85; }
+.band-note a { color: var(--on-red); }
+
+/* cases: horizontal accordion, one screen */
+.acc { display: flex; gap: 8px; height: clamp(460px, 68vh, 640px); }
+.panel { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: 6px; cursor: pointer; transition: flex-grow .55s cubic-bezier(.3,.7,.2,1); outline-offset: 4px; }
+.panel.is-open { flex-grow: 5.5; cursor: default; }
+.panel > video, .panel > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.panel.has-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.7)); pointer-events: none; }
+.panel .cover { position: absolute; right: 0; bottom: 0; font-family: var(--display); font-weight: 800; font-size: clamp(80px, 11vw, 170px); line-height: .78; letter-spacing: -0.05em; transform: translateY(7%); white-space: nowrap; opacity: 0; transition: opacity .4s; z-index: 1; }
+.panel.is-open .cover { opacity: 1; transition-delay: .2s; }
+.panel .chip { position: absolute; left: 14px; top: 14px; bottom: auto; z-index: 3; }
+/* collapsed strip */
+.panel .short { position: absolute; inset: 56px 14px 18px; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; transition: opacity .25s; }
+.panel .short h3 { writing-mode: vertical-rl; transform: rotate(180deg); font-size: clamp(18px, 1.7vw, 24px); line-height: 1.1; max-height: 100%; overflow: hidden; }
+.panel .short b { font-family: var(--display); font-weight: 800; font-size: 20px; letter-spacing: -0.03em; white-space: nowrap; }
+.panel.is-open .short { opacity: 0; pointer-events: none; }
+/* opened content */
+.panel .full { position: absolute; left: 0; top: 0; bottom: 0; width: min(520px, 100%); padding: 60px clamp(16px, 2.2vw, 28px) 24px; display: flex; flex-direction: column; gap: 14px; z-index: 2; opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s; pointer-events: none; }
+.panel.is-open .full { opacity: 1; transform: none; transition: opacity .35s .22s, transform .35s .22s; pointer-events: auto; }
+.panel .full .meta { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
+.panel .full h3 { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.1; }
+.panel .tdr { display: grid; gap: 10px; font-size: 15.5px; max-width: 40ch; }
+.panel .tdr div { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; }
+.panel .tdr .k { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; opacity: .7; padding-top: 4px; }
+.panel .res { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.panel .res b { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 3.4vw, 44px); letter-spacing: -0.04em; line-height: 1; }
+.panel .res span { font-size: 14px; opacity: .8; max-width: 26ch; }
+.panel .full a { align-self: flex-start; font-weight: 600; font-size: 14px; padding: 10px 16px; border-radius: 999px; background: #fff; color: #141414; text-decoration: none; }
+.hint { color: var(--muted); }
+@media (prefers-reduced-motion: reduce) { .panel, .panel .full, .panel .short, .panel .cover { transition: none !important; } }
+/* phones and tablets: vertical accordion */
+@media (max-width: 860px) {
+  .acc { flex-direction: column; height: auto; }
+  .panel { flex: none; height: 76px; transition: height .45s cubic-bezier(.3,.7,.2,1); }
+  .panel.is-open { height: 520px; }
+  .panel .chip { top: 50%; transform: translateY(-50%); }
+  .panel.is-open .chip { top: 14px; transform: none; }
+  .panel .short { inset: 0 16px 0 120px; flex-direction: row; align-items: center; gap: 12px; }
+  .panel .short h3 { writing-mode: horizontal-tb; transform: none; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  .panel .full { width: 100%; }
+  .panel .cover { font-size: clamp(80px, 26vw, 150px); }
+}
+@media (max-width: 420px) { .panel .short b { display: none; } }
+
+/* services */
+.svc-main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 56px); padding-block: clamp(28px, 4vw, 44px); border-block: 2px solid var(--ink); }
+@media (max-width: 760px) { .svc-main { grid-template-columns: 1fr; } }
+.svc-main h3 { font-size: clamp(32px, 4.6vw, 60px); line-height: 1; font-weight: 800; }
+.svc-main ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.svc-main li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; }
+.svc-main li::before { content: "→"; color: var(--red); font-weight: 600; }
+.svc-rest { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; margin-top: 32px; }
+@media (max-width: 960px) { .svc-rest { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .svc-rest { grid-template-columns: 1fr; } }
+.svc-rest h4 { font-family: var(--display); font-weight: 600; font-size: 18px; margin: 0 0 6px; letter-spacing: -0.01em; }
+.svc-rest p { color: var(--muted); font-size: 15px; }
+
+
+/* splash: word unfolds right-to-left from one letter, then flies into the header */
+.brand span { display: inline-block; line-height: 1; }
+.splash-on .fab { opacity: 0; pointer-events: none; }
+.splash-on .brand span { opacity: 0; }
+#splash { display: none; }
+.splash-on #splash { display: block; position: fixed; inset: 0; z-index: 50; cursor: pointer; overflow: hidden; }
+#splash .bg { position: absolute; inset: 0; background: var(--paper); }
+#splashWord { position: absolute; top: 40%; white-space: nowrap; font-family: var(--display); font-weight: 800; letter-spacing: -0.03em; line-height: 1; font-size: min(12vw, 200px); left: 0; color: var(--ink); transform-origin: 0 0; }
+#splashWord .l { display: inline-block; overflow: hidden; vertical-align: bottom; }
+
+/* floating contact button */
+.fab { position: fixed; z-index: 8; right: calc(16px + env(safe-area-inset-right, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); background: var(--red); color: var(--on-red); font-family: var(--body); font-weight: 600; font-size: 16px; text-decoration: none; padding: 14px 22px; border-radius: 999px; box-shadow: 0 8px 24px rgba(0,0,0,.18); display: inline-flex; align-items: center; gap: 10px; transition: opacity .25s, transform .25s; }
+.fab::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.fab.away { opacity: 0; transform: translateY(12px); pointer-events: none; }
+.contact { scroll-margin-top: 72px; }
+@media (prefers-reduced-motion: reduce) { .fab { transition: none; } }
+
+
+/* services accordion + pipeline below */
+.acc.svc { height: clamp(380px, 54vh, 540px); }
+@media (max-width: 860px) { .acc.svc { height: auto; } .svc .panel .short { left: 16px !important; top: 0 !important; } }
+.panel .full ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 40ch; font-size: 15.5px; }
+.panel .full li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 6px; }
+.panel .full li::before { content: "→"; font-weight: 600; }
+.panel .full p.desc { font-size: 16px; max-width: 40ch; opacity: .9; }
+.pipe { margin-top: clamp(32px, 5vw, 56px); scroll-margin-top: 80px; }
+.pipe-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.pipe-head h3 { font-size: clamp(28px, 3.6vw, 44px); line-height: 1; }
+.pipe-head .mono b { color: var(--red); font-weight: 500; }
+#pipeSteps.swap { animation: pipeIn .4s ease-out; }
+@keyframes pipeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { #pipeSteps.swap { animation: none; } }
+
+
+/* services as browser tabs: one tab = what we do + how we do it */
+.tabs { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; padding-inline: 12px; margin-inline: -12px; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { position: relative; flex: 0 0 auto; display: flex; align-items: center; gap: 10px; padding: 13px 20px 15px; border: 0; border-radius: 12px 12px 0 0; background: var(--soft); color: var(--muted); font-family: var(--display); font-weight: 600; font-size: 15px; letter-spacing: -0.01em; cursor: pointer; white-space: nowrap; transition: background .2s, color .2s; }
+.tab:hover { color: var(--ink); }
+.tab .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 1px var(--line); }
+.tab[aria-selected="true"] { background: var(--c); color: var(--fgc); z-index: 1; }
+.tab[aria-selected="true"] .dot { background: var(--fgc); box-shadow: none; }
+.tab[aria-selected="true"]::before, .tab[aria-selected="true"]::after { content: ""; position: absolute; bottom: 0; width: 12px; height: 12px; }
+.tab[aria-selected="true"]::before { left: -12px; background: radial-gradient(circle at 0 0, transparent 11.5px, var(--c) 12px); }
+.tab[aria-selected="true"]::after { right: -12px; background: radial-gradient(circle at 100% 0, transparent 11.5px, var(--c) 12px); }
+.tabpanel { position: relative; background: var(--c); color: var(--fgc); border-radius: 0 14px 14px 14px; padding: clamp(24px, 4vw, 48px) clamp(18px, 3.5vw, 44px); overflow: hidden; transition: background .3s; outline: none; }
+.tabpanel.not-first { border-top-left-radius: 14px; }
+.tp-in { display: grid; gap: clamp(28px, 4vw, 44px); animation: tpIn .4s ease-out; }
+@keyframes tpIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .tp-in { animation: none; } .tab, .tabpanel { transition: none; } }
+.tp-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: end; }
+.tp-head h3 { font-size: clamp(30px, 4.4vw, 56px); line-height: 1; font-weight: 800; margin-bottom: 14px; }
+.tp-head p { font-size: 17px; max-width: 46ch; opacity: .9; }
+.tp-head ul { margin: 14px 0 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+.tp-head li { font-size: 14px; padding: 7px 12px; border-radius: 999px; background: color-mix(in srgb, currentColor 12%, transparent); }
+.tp-cover { font-family: var(--display); font-weight: 800; font-size: clamp(80px, 12vw, 180px); line-height: .8; letter-spacing: -0.05em; white-space: nowrap; }
+@media (max-width: 700px) { .tp-head { grid-template-columns: 1fr; } .tp-cover { display: none; } }
+.tp-label { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; opacity: .75; margin-bottom: 12px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: space-between; }
+.flow { display: grid; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); gap: 12px; counter-reset: st; }
+@media (max-width: 1040px) { .flow { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .flow { grid-template-columns: 1fr; } }
+.st { position: relative; display: grid; gap: 8px; align-content: start; padding: 16px; border-radius: 10px; background: color-mix(in srgb, currentColor 9%, transparent); min-width: 0; }
+.st .n { font-family: var(--mono); font-size: 12px; opacity: .7; }
+.st h4 { margin: 0; font-family: var(--display); font-weight: 600; font-size: 17px; line-height: 1.2; letter-spacing: -0.01em; }
+.st p { font-size: 14px; opacity: .85; }
+.st .ok { margin-top: 4px; border-color: color-mix(in srgb, currentColor 40%, transparent); color: inherit; }
+.st .ok.you { background: var(--fgc); color: var(--c); border-color: var(--fgc); }
+@media (min-width: 1041px) { .st:not(:last-child)::after { content: "→"; position: absolute; right: -11px; top: 14px; font-weight: 600; z-index: 1; } }
+
+
+/* bigger tabs, compact panel so the whole block fits one screen */
+.tab:first-child[aria-selected="true"]::before, .tab:last-child[aria-selected="true"]::after { display: none; }
+.tabpanel.is-last { border-top-right-radius: 0; }
+#services { padding-block: clamp(40px, 6vw, 80px); }
+#services .sec-head { margin-bottom: 20px; }
+.tabs { gap: 6px; }
+.tab { flex: 1 1 0; min-width: 150px; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 16px 18px 18px; min-height: 104px; border-radius: 14px 14px 0 0; font-size: clamp(16px, 1.6vw, 21px); line-height: 1.1; white-space: normal; text-align: left; }
+.tab .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
+.tab .dot { width: 12px; height: 12px; }
+.tab .cnt { font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
+.tab .nm { text-wrap: balance; }
+.tab[aria-selected="true"]::before, .tab[aria-selected="true"]::after { width: 14px; height: 14px; }
+.tab[aria-selected="true"]::before { left: -14px; background: radial-gradient(circle at 0 0, transparent 13.5px, var(--c) 14px); }
+.tab[aria-selected="true"]::after { right: -14px; background: radial-gradient(circle at 100% 0, transparent 13.5px, var(--c) 14px); }
+.tabpanel { padding: clamp(20px, 2.6vw, 32px) clamp(18px, 2.8vw, 36px); }
+.tp-in { gap: 22px; }
+.tp-head { align-items: center; }
+.tp-head h3 { display: none; }
+.tp-head p { font-size: clamp(17px, 1.6vw, 21px); max-width: 52ch; }
+.tp-head ul { margin-top: 12px; }
+.tp-cover { font-size: clamp(64px, 8vw, 120px); }
+.st { padding: 14px; gap: 6px; }
+.st h4 { font-size: 16px; }
+.st p { font-size: 13.5px; line-height: 1.45; }
+@media (max-width: 860px) { .tab { flex: 0 0 auto; min-width: 168px; min-height: 92px; } }
+
+/* process */
+.steps { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.step { display: grid; grid-template-columns: 72px minmax(0, 1.1fr) minmax(0, 1.4fr) 180px; gap: 16px 24px; padding-block: 24px; border-bottom: 1px solid var(--line); align-items: start; }
+@media (max-width: 860px) { .step { grid-template-columns: 52px minmax(0, 1fr); } .step p, .step .ok { grid-column: 2; } }
+.step .n { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 6px; }
+.step h3 { font-size: clamp(20px, 2.2vw, 26px); }
+.step p { color: var(--muted); font-size: 15.5px; }
+.ok { justify-self: start; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.ok.you { border-color: var(--red); color: var(--red); }
+
+/* terms */
+.terms { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin-top: clamp(40px, 6vw, 72px); }
+@media (max-width: 860px) { .terms { grid-template-columns: 1fr; } }
+.term { border: 1px solid var(--line); border-radius: 6px; padding: 24px; display: grid; gap: 10px; align-content: start; }
+.term .mono { color: var(--muted); }
+.term b { font-family: var(--display); font-weight: 600; font-size: 22px; line-height: 1.2; letter-spacing: -0.01em; }
+.term p { color: var(--muted); font-size: 15px; }
+
+/* clients */
+.clients { display: flex; flex-wrap: wrap; gap: 12px 36px; font-family: var(--display); font-weight: 400; font-size: clamp(20px, 2.6vw, 32px); color: var(--muted); letter-spacing: -0.02em; }
+
+/* contact */
+.contact h2 { font-size: clamp(40px, 7vw, 92px); line-height: .98; font-weight: 800; margin-bottom: 20px; }
+.contact .sub { font-size: 18px; max-width: 46ch; margin-bottom: 40px; }
+.rows { border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: 140px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding-block: 18px; border-bottom: 1px solid var(--line); }
+@media (max-width: 560px) { .row { grid-template-columns: minmax(0, 1fr) auto; } .row .mono { grid-column: 1 / -1; } }
+.row .v { font-family: var(--display); font-size: clamp(17px, 2.2vw, 24px); overflow-wrap: anywhere; }
+.row button { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; cursor: pointer; }
+footer { padding-block: 32px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+</style>
+
+</head>
+<body>
+<div id="splash" aria-hidden="true"><div class="bg"></div><span id="splashWord"></span></div>
+<script>if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("splash-on");</script>
+<a class="fab" id="fab" href="#contact">связаться</a>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#reel" aria-label="Каникулы, в начало">
+      <i class="logo" aria-hidden="true"></i>
+      <span>каникулы</span>
+    </a>
+    <nav class="links" aria-label="Разделы">
+      <a href="#work">работы</a>
+      <a class="opt" href="#services">что делаем</a>
+      <a href="#contact">связь</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ШОУРИЛ. Положите файл media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
+     Пока файла нет, играет анимированная заставка из обложек кейсов. -->
+<section class="reel" id="reel" style="padding-block:0">
+  <div class="reel-frame">
+    <div class="stand" id="stand" aria-hidden="true">
+      <div class="slide"><b>лето</b></div>
+      <div class="slide"><b>48ч</b></div>
+      <div class="slide"><b>×3</b></div>
+      <div class="slide"><b>0→2м</b></div>
+      <div class="slide"><b>км</b></div>
+      <div class="slide"><b>1д</b></div>
+    </div>
+    <video id="reelVideo" autoplay muted loop playsinline preload="auto" aria-label="Шоурил студии Каникулы">
+      <source src="media/showreel.mp4" type="video/mp4">
+    </video>
+    <div class="reel-shade"></div>
+    <div class="reel-over">
+      <div class="wrap">
+        <span class="reel-tag"><i></i>шоурил 2026</span>
+        <div class="reel-btns">
+          <button class="btn btn-light" id="soundBtn" type="button" hidden>со звуком</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="intro">
+  <div class="wrap intro-grid">
+    <h1><em>миллионы</em> смотрят до конца</h1>
+    <div class="lead">
+      <div class="reel-btns">
+        <a class="btn btn-ghost" href="#work">смотреть работы</a>
+        <a class="btn btn-ghost" href="#services">как работаем</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="band" id="numbers" aria-labelledby="numbersTitle">
+  <div class="wrap">
+    <p class="mono" id="numbersTitle">наши ролики набирают</p>
+    <div class="nums">
+      <div><b>1,4 млрд</b><span>просмотров у роликов, которые мы сделали</span></div>
+      <div><b>37</b><span>видео перевалили за 10 млн органически</span></div>
+      <div><b>12 млн</b><span>подписчиков в медиа, которые мы ведём</span></div>
+      <div><b>160+</b><span>проектов для брендов, фестивалей и платформ</span></div>
+    </div>
+    <p class="band-note">Цифры по каждому проекту и ссылки на ролики в разделе <a href="#work">работы</a>.</p>
+  </div>
+</section>
+
+<section id="work">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>работы</h2>
+      <span class="mono hint" id="accHint">наведите на кейс, чтобы раскрыть</span>
+    </div>
+    <div class="acc" id="cases"></div>
+  </div>
+</section>
+
+<section id="services" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>что делаем</h2>
+      <span class="mono hint">выберите направление</span>
+    </div>
+    <div class="tabs" role="tablist" aria-label="Направления" id="svcTabs"></div>
+    <div class="tabpanel" role="tabpanel" id="svcPanel" tabindex="-1"></div>
+  </div>
+</section>
+
+<section id="clients" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2>нас выбрали</h2>
+      <span class="mono">бренды, лейблы, платформы</span>
+    </div>
+    <div class="clients">
+      <span>молочный двор</span><span>банк «полёт»</span><span>лейбл «волна»</span><span>сеть «корзинка»</span><span>бег.про</span><span>оператор «связь+»</span><span>кинофестиваль «лето»</span>
+    </div>
+  </div>
+</section>
+
+<section class="contact" id="contact" style="padding-top:0">
+  <div class="wrap">
+    <h2>оставьте задачу и на море.</h2>
+    <p class="sub">Напишите в двух словах, что нужно. Ответим в течение рабочего дня и предложим время для созвона.</p>
+    <div class="rows">
+      <div class="row"><span class="mono">почта</span><span class="v" id="mail">hello@kanikuly.studio</span><button type="button" id="copyBtn">копировать</button></div>
+      <div class="row"><span class="mono">телеграм</span><a class="v" href="https://t.me/kanikuly_studio" target="_blank" rel="noopener">@kanikuly_studio</a><span></span></div>
+      <div class="row"><span class="mono">город</span><span class="v">Москва · работаем везде</span><span></span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span class="mono">© 2026 каникулы</span>
+    <span class="mono">лето здесь круглый год</span>
+  </div>
+</footer>
+
+<script>
+/* Кейсы. Чтобы показать ролик: положите файл в папку media/ и впишите путь в video (например "media/leto.mp4") (или картинку в image).
+   link — ссылка на опубликованный ролик или пост; пока пусто, кнопка «смотреть» не показывается. */
+const CASES = [
+  { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
+    title: "«Лето в стакане»",
+    task: "Вернуть детей к молоку без нравоучений.",
+    did: "12 серий по 15 секунд про двор, где каждое лето длится вечно.",
+    res: "86 млн", resNote: "просмотров за сезон, продажи +23%", video: "", image: "", link: "" },
+  { chip: "ии-видео", cover: "48ч", bg: "var(--t-blue)", fg: "#ffffff", client: "банк · 2026", format: "генеративный ролик",
+    title: "«Деньги во сне»",
+    task: "Запуск продукта перенесли на неделю раньше.",
+    did: "Сюрреалистичный ИИ-ролик от сценария до эфира за двое суток.",
+    res: "31 млн", resNote: "охват, 4 отраслевые награды", video: "", image: "", link: "" },
+  { chip: "гибрид", cover: "×3", bg: "#e3191c", fg: "#ffffff", client: "музыкальный лейбл · 2025", format: "съёмка + анимация + ии",
+    title: "Клип «Надувной круг»",
+    task: "Клип, который запомнят в коротких видео.",
+    did: "Артист в настоящем бассейне, вокруг рисованные волны и нейросетевые медузы. Каждая сцена собрана из трёх слоёв.",
+    res: "54 млн", resNote: "просмотров, тренд в коротких видео", video: "", image: "", link: "" },
+  { chip: "медиа", cover: "0→2м", bg: "var(--t-black)", fg: "#ffffff", client: "фуд-ритейл · 2025–2026", format: "ведение каналов",
+    title: "Канал, который смотрят ради шуток",
+    task: "Запустить аккаунт сети с нуля.",
+    did: "Рубрика с говорящими продуктами, 5 роликов в неделю.",
+    res: "2,1 млн", resNote: "подписчиков за 14 месяцев", video: "", image: "", link: "" },
+  { chip: "продакшн", cover: "км", bg: "var(--t-green)", fg: "#ffffff", client: "спортивный бренд · 2025", format: "рекламный фильм",
+    title: "«Каждый километр»",
+    task: "Показать бег без глянца.",
+    did: "Обычные люди на утренних пробежках в шести городах. Без актёров и студии, на рассвете.",
+    res: "19 млн", resNote: "просмотров, ролик года по версии клиента", video: "", image: "", link: "" },
+  { chip: "вирус", cover: "1д", bg: "var(--t-grey)", fg: "var(--ink)", client: "мобильный оператор · 2026", format: "ии + 2D",
+    title: "Мем за один день",
+    task: "Успеть ответить на инфоповод, пока он живой.",
+    did: "Поймали инфоповод утром, к вечеру выпустили анимированный ответ бренда. Его перепостили конкуренты.",
+    res: "12 млн", resNote: "просмотров за первые 24 часа", video: "", image: "", link: "" }
+];
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const acc = document.getElementById("cases");
+acc.innerHTML = CASES.map((c, i) => {
+  const media = c.video
+    ? `<video src="${esc(c.video)}" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>`
+    : c.image ? `<img src="${esc(c.image)}" alt="">` : "";
+  const fg = media ? "#ffffff" : c.fg;
+  const link = c.link ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">смотреть ролик →</a>` : "";
+  return `<article class="panel${i === 0 ? " is-open" : ""}${media ? " has-media" : ""}" tabindex="0" aria-expanded="${i === 0}" style="background:${c.bg};color:${fg}">
+    ${media}
+    <span class="chip">${esc(c.chip)}</span>
+    <div class="short" aria-hidden="true"><h3>${esc(c.title)}</h3><b>${esc(c.res)}</b></div>
+    <div class="full">
+      <span class="meta">${esc(c.client)} · ${esc(c.format)}</span>
+      <h3>${esc(c.title)}</h3>
+      <div class="tdr">
+        <div><span class="k">задача</span><span>${esc(c.task)}</span></div>
+        <div><span class="k">сделали</span><span>${esc(c.did)}</span></div>
+      </div>
+      <div class="res"><b>${esc(c.res)}</b><span>${esc(c.resNote)}</span></div>
+      ${link}
+    </div>
+    ${media ? "" : `<span class="cover" aria-hidden="true">${esc(c.cover)}</span>`}
+  </article>`;
+}).join("");
+const canHover = matchMedia("(hover: hover)").matches;
+function setupAcc(box, onOpen) {
+  const panels = [...box.querySelectorAll(".panel")];
+  const open = el => {
+    if (el.classList.contains("is-open")) return;
+    panels.forEach(p => { const on = p === el; p.classList.toggle("is-open", on); p.setAttribute("aria-expanded", on); });
+    onOpen && onOpen(panels.indexOf(el));
+  };
+  panels.forEach(p => {
+    if (canHover) p.addEventListener("mouseenter", () => open(p));
+    p.addEventListener("click", () => open(p));
+    p.addEventListener("focus", () => open(p));
+    p.addEventListener("keydown", e => {
+      const i = panels.indexOf(p);
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") { e.preventDefault(); panels[(i + 1) % panels.length].focus(); }
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") { e.preventDefault(); panels[(i - 1 + panels.length) % panels.length].focus(); }
+    });
+  });
+}
+setupAcc(acc);
+if (!canHover) document.getElementById("accHint").textContent = "нажмите на кейс, чтобы раскрыть";
+
+/* Направления и их пайплайны. you: true — этап, который утверждает клиент. */
+const SERVICES = [
+  { name: "ии-видео", cover: "ии", bg: "var(--t-blue)", fg: "#ffffff",
+    desc: "Генеративные ролики под режиссёрским контролем.",
+    list: ["Реклама, клипы, имиджевые ролики, серии для соцсетей и вирусные форматы.", "Нейросеть работает по раскадровке, а не наугад.", "Гибрид: живая съёмка, рисованная анимация и генерация в одном кадре."],
+    steps: [
+      ["бриф", "Созвон или пара сообщений. Уточняем задачу, площадки, хронометраж и сроки. Дальше вопросы задаём мы.", "от вас: задача"],
+      ["раскадровка и стиль", "Рисуем раскадровку и фиксируем визуальный стиль. Дальше производство идёт строго по утверждённому.", "утверждаете вы", true],
+      ["пилот или аниматик", "Первая сборка в движении: ритм, свет, характер. Самое дешёвое место для крупных правок.", "утверждаете вы", true],
+      ["производство", "Генерация кадров, видео, монтаж, звук. Показываем промежуточные версии в общем чате.", "отчёт раз в неделю"],
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+    ] },
+  { name: "традиционная анимация", cover: "2d", bg: "#e3191c", fg: "#ffffff",
+    desc: "Покадровая 2D, перекладка, стоп-моушен. Когда нужна тёплая ручная линия.",
+    list: ["Сериалы и короткие ролики для брендов.", "Персонажи и мир под ваш продукт."],
+    steps: [
+      ["бриф", "Задача, площадки, хронометраж и сроки.", "от вас: задача"],
+      ["сценарий и раскадровка", "Пишем историю и раскладываем её по кадрам.", "утверждаете вы", true],
+      ["дизайн персонажей и фонов", "Рисуем героев, фоны и цветовую палитру.", "утверждаете вы", true],
+      ["аниматик", "Раскадровка в движении со звуком. Здесь проверяем ритм и тайминг.", "утверждаете вы", true],
+      ["анимация и композ", "Анимация, заливка, композ, звук и музыка.", "отчёт раз в неделю"],
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+    ] },
+  { name: "гибрид медиа", cover: "×3", bg: "var(--t-yellow)", fg: "#141414",
+    desc: "Живые съёмки, анимация и нейросети в одном кадре, собранные по слоям.",
+    list: ["Клипы и рекламные ролики.", "Каждая сцена собирается из нескольких слоёв."],
+    steps: [
+      ["бриф", "Задача, площадки, хронометраж и сроки.", "от вас: задача"],
+      ["раскадровка и стиль", "Раскладываем каждую сцену по слоям: что снимаем, что рисуем, что генерируем.", "утверждаете вы", true],
+      ["съёмка", "Снимаем живой слой: артист, площадка, свет под будущую графику.", ""],
+      ["анимация и генерация", "Рисуем и генерируем слои поверх отснятого материала.", "отчёт раз в неделю"],
+      ["сборка и звук", "Композ, цвет, монтаж и звук.", "утверждаете вы", true],
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+    ] },
+  { name: "видеопродакшн", cover: "rec", bg: "var(--t-green)", fg: "#ffffff",
+    desc: "Реклама, клипы, имиджевые фильмы. Полный цикл от сценария до поста.",
+    list: ["Сценарий, кастинг, съёмка, пост.", "Съёмки в разных городах."],
+    steps: [
+      ["бриф", "Задача, площадки, хронометраж и сроки.", "от вас: задача"],
+      ["сценарий", "Пишем сценарий и режиссёрскую экспликацию.", "утверждаете вы", true],
+      ["препродакшн", "Кастинг, локации, команда, календарь съёмок.", "утверждаете вы", true],
+      ["съёмка", "Снимаем по утверждённому плану.", ""],
+      ["монтаж, цвет, звук", "Собираем ролик, показываем черновую и чистовую сборки.", "утверждаете вы", true],
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+    ] },
+  { name: "ведение медиа", cover: "0→2м", bg: "var(--t-black)", fg: "#ffffff",
+    desc: "Каналы и аккаунты брендов: рубрики, регулярный выпуск, рост в цифрах.",
+    list: ["Запуск аккаунта с нуля или перезапуск.", "Регулярный выпуск роликов."],
+    steps: [
+      ["бриф", "Цели, аудитория, площадки.", "от вас: задача"],
+      ["стратегия и рубрики", "Придумываем рубрики и формат канала.", "утверждаете вы", true],
+      ["контент-план", "План выпусков на месяц вперёд.", "утверждаете вы", true],
+      ["регулярный выпуск", "Снимаем, рисуем, генерируем и публикуем по графику.", ""],
+      ["отчёт и рост", "Смотрим цифры и меняем то, что не работает.", "отчёт раз в месяц"]
+    ] }
+];
+const svcTabs = document.getElementById("svcTabs");
+const svcPanel = document.getElementById("svcPanel");
+svcTabs.innerHTML = SERVICES.map((v, i) => `<button class="tab" role="tab" type="button" id="tab-${i}" aria-controls="svcPanel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" style="--c:${v.bg};--fgc:${v.fg}"><span class="top"><span class="dot"></span><span class="cnt">${v.steps.length} этапов</span></span><span class="nm">${esc(v.name)}</span></button>`).join("");
+const tabs = [...svcTabs.children];
+function showService(i) {
+  const v = SERVICES[i];
+  tabs.forEach((t, k) => { t.setAttribute("aria-selected", k === i); t.tabIndex = k === i ? 0 : -1; });
+  svcPanel.style.setProperty("--c", v.bg); svcPanel.style.setProperty("--fgc", v.fg);
+  svcPanel.classList.toggle("not-first", i !== 0);
+  svcPanel.classList.toggle("is-last", i === SERVICES.length - 1);
+  svcPanel.setAttribute("aria-labelledby", "tab-" + i);
+  const approvals = v.steps.filter(x => x[3]).length;
+  svcPanel.innerHTML = `<div class="tp-in">
+    <div class="tp-head">
+      <div><h3>${esc(v.name)}</h3><p>${esc(v.desc)}</p><ul>${v.list.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>
+      <span class="tp-cover" aria-hidden="true">${esc(v.cover)}</span>
+    </div>
+    <div>
+      <div class="tp-label"><span>как работаем</span><span>${v.steps.length} этапов · ${approvals} точки согласования</span></div>
+      <div class="flow" style="--n:${v.steps.length}">${v.steps.map(([t, d, ok, you], k) => `<div class="st"><span class="n">${String(k + 1).padStart(2, "0")}</span><h4>${esc(t)}</h4><p>${esc(d)}</p>${ok ? `<span class="ok${you ? " you" : ""}">${esc(ok)}</span>` : ""}</div>`).join("")}</div>
+    </div>
+  </div>`;
+}
+tabs.forEach((t, i) => {
+  t.addEventListener("click", () => showService(i));
+  t.addEventListener("keydown", e => {
+    let j = null;
+    if (e.key === "ArrowRight") j = (i + 1) % tabs.length;
+    if (e.key === "ArrowLeft") j = (i - 1 + tabs.length) % tabs.length;
+    if (j !== null) { e.preventDefault(); showService(j); tabs[j].focus(); tabs[j].scrollIntoView({ block: "nearest", inline: "nearest" }); }
+  });
+});
+showService(0);
+
+/* Шоурил: если файл есть и играет, прячем заставку и показываем кнопку звука */
+const v = document.getElementById("reelVideo");
+const stand = document.getElementById("stand");
+const sound = document.getElementById("soundBtn");
+v.addEventListener("playing", () => { v.style.opacity = 1; stand.hidden = true; sound.hidden = false; });
+const p = v.play && v.play();
+if (p && p.catch) p.catch(() => {});
+sound.addEventListener("click", () => {
+  v.muted = !v.muted;
+  if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
+  sound.textContent = v.muted ? "со звуком" : "без звука";
+});
+
+/* Копирование почты */
+document.getElementById("copyBtn").addEventListener("click", async e => {
+  const btn = e.currentTarget, text = document.getElementById("mail").textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = "скопировано"; }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "выделено"; }
+  setTimeout(() => btn.textContent = "копировать", 1800);
+});
+/* Заставка: «каникулы» раскрывается из буквы «к» слева направо и улетает в шапку */
+(async () => {
+  const root = document.documentElement;
+  const splash = document.getElementById("splash");
+  const word = document.getElementById("splashWord");
+  const target = document.querySelector(".brand span");
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let finished = false;
+  const done = () => { if (finished) return; finished = true; root.classList.remove("splash-on"); splash.remove(); };
+  if (reduce || !word.animate) { done(); return; }
+  root.classList.add("splash-on");
+  splash.addEventListener("click", done);
+  setTimeout(done, 6000);
+  try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1200))]); } catch {}
+  const letters = [..."каникулы"];
+  word.innerHTML = letters.map(ch => `<span class="l">${ch}</span>`).join("");
+  const ls = [...word.children];
+  const fit = word.getBoundingClientRect().width;
+  if (fit > innerWidth * 0.9) word.style.fontSize = (parseFloat(getComputedStyle(word).fontSize) * innerWidth * 0.9 / fit) + "px";
+  const widths = ls.map(l => l.getBoundingClientRect().width);
+  const box = word.getBoundingClientRect();
+  word.style.right = "auto";
+  word.style.left = Math.max(0, (innerWidth - box.width) / 2) + "px";
+  word.style.top = ((innerHeight - box.height) / 2) + "px";
+  const first = 0;
+  ls.forEach((l, i) => l.style.width = i === first ? widths[i] + "px" : "0px");
+  const wait = ms => new Promise(r => setTimeout(r, ms));
+
+  await ls[first].animate([{ opacity: 0, transform: "scale(.4)" }, { opacity: 1, transform: "scale(1)" }],
+    { duration: 380, easing: "cubic-bezier(.2,.8,.2,1.2)" }).finished.catch(() => {});
+  if (finished) return;
+  await wait(120);
+  const grows = [];
+  for (let i = 1; i < ls.length; i++) {
+    const k = i - 1;
+    grows.push(ls[i].animate([{ width: "0px" }, { width: widths[i] + "px" }],
+      { duration: 360, delay: k * 85, easing: "cubic-bezier(.3,.7,.2,1)", fill: "forwards" }).finished);
+  }
+  await Promise.all(grows).catch(() => {});
+  if (finished) return;
+  ls.forEach((l, i) => l.style.width = widths[i] + "px");
+  await wait(320);
+  if (finished) return;
+
+  const from = word.getBoundingClientRect();
+  const to = target.getBoundingClientRect();
+  const bg = splash.querySelector(".bg");
+  if (!to.width) {
+    await Promise.all([
+      word.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 400, fill: "forwards" }).finished,
+      bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 500, fill: "forwards" }).finished
+    ]).catch(() => {});
+    done(); return;
+  }
+  const sc = to.width / from.width;
+  const dx = to.left - from.left, dy = to.top - from.top;
+  const fly = word.animate([{ transform: "none" }, { transform: `translate(${dx}px, ${dy}px) scale(${sc})` }],
+    { duration: 750, easing: "cubic-bezier(.7,0,.2,1)", fill: "forwards" }).finished;
+  const fade = bg.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 550, delay: 250, easing: "ease-out", fill: "forwards" }).finished;
+  await Promise.all([fly, fade]).catch(() => {});
+  done();
+})();
+
+/* Кнопка «связаться» прячется, когда блок контактов уже на экране */
+(() => {
+  const fab = document.getElementById("fab");
+  const contact = document.getElementById("contact");
+  if (!("IntersectionObserver" in window)) return;
+  new IntersectionObserver(([e]) => fab.classList.toggle("away", e.isIntersecting), { threshold: 0.25 }).observe(contact);
+})();
+</script>
+
+</body>
+</html>
