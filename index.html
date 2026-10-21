@@ -296,6 +296,47 @@ nav.links a:hover { color: var(--ink); }
 .row button { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 10px 14px; cursor: pointer; }
 footer { padding-block: 32px; }
 footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+/* phones: last word over everything above */
+@media (max-width: 600px) {
+  section { padding-block: 56px; }
+  .intro { padding-block: 36px 40px; }
+  .slide b { font-size: 30vw; }
+  .reel-frame { min-height: 0; }
+
+  /* numbers: one per row, never split "1,4 млрд" */
+  .nums { grid-template-columns: minmax(0, 1fr); gap: 0; margin-top: 16px; }
+  .nums > div { padding-block: 16px; border-top: 1px solid color-mix(in srgb, var(--on-red) 30%, transparent); }
+  .nums b { font-size: 44px; white-space: nowrap; }
+  .nums span { margin-top: 6px; max-width: none; }
+  .band-note { margin-top: 16px; }
+
+  /* cases: opened card grows with its text instead of a fixed height */
+  .panel.is-open { height: auto; min-height: 220px; }
+  .panel.is-open.has-media { min-height: 460px; }
+  .panel.has-media .full { justify-content: flex-end; min-height: 460px; }
+  .panel .full { position: relative; padding: 56px 16px 20px; }
+  .panel:not(.is-open) .full { position: absolute; }
+  .panel .cover { display: none; }
+  .panel .tdr div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+  .panel .tdr .k { padding-top: 0; }
+
+  /* services: compact tabs that scroll sideways with snapping */
+  .tabs { scroll-snap-type: x mandatory; padding-inline: 16px; margin-inline: -16px; scroll-padding-inline: 16px; }
+  .tab { min-width: 0; min-height: 72px; padding: 12px 14px 14px; gap: 8px; font-size: 15px; scroll-snap-align: start; }
+  .tab .nm { white-space: nowrap; }
+  .tabpanel { border-top-left-radius: 0; padding: 20px 16px; }
+  .tp-head p { font-size: 16px; }
+  .tp-head li { font-size: 13px; border-radius: 10px; padding: 6px 10px; }
+
+  .clients { gap: 8px 20px; font-size: 20px; }
+  .contact h2 { font-size: 40px; }
+  .row .v { font-size: 17px; }
+
+  /* keep the floating button off the footer */
+  .fab { font-size: 15px; padding: 12px 18px; }
+  footer { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
+}
 </style>
 
 </head>
@@ -426,6 +467,17 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 /* Кейсы. Чтобы показать ролик: положите файл в папку media/ и впишите путь в video (например "media/leto.mp4") (или картинку в image).
    link — ссылка на опубликованный ролик или пост; пока пусто, кнопка «смотреть» не показывается. */
 const CASES = [
+  /* Флагманы. Пустые поля на сайте не показываются: дописывайте по мере появления данных. */
+  { chip: "флагман", cover: "океан", bg: "var(--t-blue)", fg: "#ffffff", client: "", format: "",
+    title: "Океаномания",
+    task: "",
+    did: "",
+    res: "", resNote: "", video: "", image: "", link: "" },
+  { chip: "флагман", cover: "yeti", bg: "var(--t-green)", fg: "#ffffff", client: "", format: "2D-анимация",
+    title: "Yeti",
+    task: "",
+    did: "Анимационный сериал про зелёного Йети: вертикальные ролики для соцсетей и горизонтальные эпизоды.",
+    res: "", resNote: "", video: "", image: "", link: "" },
   { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
     title: "«Лето в стакане»",
     task: "Вернуть детей к молоку без нравоучений.",
@@ -465,19 +517,19 @@ acc.innerHTML = CASES.map((c, i) => {
     ? `<video src="${esc(c.video)}" autoplay muted loop playsinline preload="metadata" aria-hidden="true"></video>`
     : c.image ? `<img src="${esc(c.image)}" alt="">` : "";
   const fg = media ? "#ffffff" : c.fg;
-  const link = c.link ? `<a href="${esc(c.link)}" target="_blank" rel="noopener">смотреть ролик →</a>` : "";
+  const meta = [c.client, c.format].filter(Boolean).join(" · ");
+  const rows = [["задача", c.task], ["сделали", c.did]].filter(r => r[1])
+    .map(([k, t]) => `<div><span class="k">${k}</span><span>${esc(t)}</span></div>`).join("");
+  const link = c.link ?`<a href="${esc(c.link)}" target="_blank" rel="noopener">смотреть ролик →</a>` : "";
   return `<article class="panel${i === 0 ? " is-open" : ""}${media ? " has-media" : ""}" tabindex="0" aria-expanded="${i === 0}" style="background:${c.bg};color:${fg}">
     ${media}
     <span class="chip">${esc(c.chip)}</span>
     <div class="short" aria-hidden="true"><h3>${esc(c.title)}</h3><b>${esc(c.res)}</b></div>
     <div class="full">
-      <span class="meta">${esc(c.client)} · ${esc(c.format)}</span>
+      ${meta ? `<span class="meta">${esc(meta)}</span>` : ""}
       <h3>${esc(c.title)}</h3>
-      <div class="tdr">
-        <div><span class="k">задача</span><span>${esc(c.task)}</span></div>
-        <div><span class="k">сделали</span><span>${esc(c.did)}</span></div>
-      </div>
-      <div class="res"><b>${esc(c.res)}</b><span>${esc(c.resNote)}</span></div>
+      ${rows ? `<div class="tdr">${rows}</div>` : ""}
+      ${c.res || c.resNote ? `<div class="res"><b>${esc(c.res)}</b><span>${esc(c.resNote)}</span></div>` : ""}
       ${link}
     </div>
     ${media ? "" : `<span class="cover" aria-hidden="true">${esc(c.cover)}</span>`}
