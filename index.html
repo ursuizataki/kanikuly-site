@@ -118,7 +118,7 @@ nav.links a:hover { color: var(--ink); }
 .panel { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: 6px; cursor: pointer; transition: flex-grow .55s cubic-bezier(.3,.7,.2,1); outline-offset: 4px; }
 .panel.is-open { flex-grow: 5.5; cursor: default; }
 .panel > video, .panel > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.panel.has-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.7)); pointer-events: none; }
+.panel.has-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55) 35%, rgba(0,0,0,.8)); pointer-events: none; }
 .panel .cover { position: absolute; right: 0; bottom: 0; font-family: var(--display); font-weight: 800; font-size: clamp(80px, 11vw, 170px); line-height: .78; letter-spacing: -0.05em; transform: translateY(7%); white-space: nowrap; opacity: 0; transition: opacity .4s; z-index: 1; }
 .panel.is-open .cover { opacity: 1; transition-delay: .2s; }
 .panel .chip { position: absolute; left: 14px; top: 14px; bottom: auto; z-index: 3; }
@@ -139,6 +139,24 @@ nav.links a:hover { color: var(--ink); }
 .panel .res b { font-family: var(--display); font-weight: 800; font-size: clamp(30px, 3.4vw, 44px); letter-spacing: -0.04em; line-height: 1; }
 .panel .res span { font-size: 14px; opacity: .8; max-width: 26ch; }
 .panel .full a { align-self: flex-start; font-weight: 600; font-size: 14px; padding: 10px 16px; border-radius: 999px; background: #fff; color: #141414; text-decoration: none; }
+.reels-btn { align-self: flex-start; font-family: var(--body); font-weight: 600; font-size: 15px; padding: 12px 18px; border: 0; border-radius: 999px; background: var(--red); color: var(--on-red); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
+.reels-btn::before { content: ""; border-left: 9px solid currentColor; border-block: 6px solid transparent; }
+
+/* vertical reels viewer */
+.rv { position: fixed; inset: 0; z-index: 60; background: rgba(10,10,11,.94); color: #fff; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.rv-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.rv-top b { font-family: var(--display); font-weight: 600; font-size: 18px; }
+.rv-top span { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; opacity: .7; margin-left: 10px; }
+.rv-btn { width: 44px; height: 44px; flex: none; border-radius: 50%; border: 0; background: rgba(255,255,255,.14); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
+.rv-btn:hover { background: rgba(255,255,255,.26); }
+.rv-stage { display: flex; align-items: center; justify-content: center; gap: 16px; min-height: 0; }
+.rv-stage video { height: 100%; max-width: 100%; aspect-ratio: 9 / 16; object-fit: contain; background: #000; border-radius: 12px; }
+.rv-thumbs { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; justify-content: safe center; }
+.rv-thumbs::-webkit-scrollbar { display: none; }
+.rv-thumbs button { flex: none; width: 50px; aspect-ratio: 9 / 16; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; background: #000; cursor: pointer; opacity: .55; }
+.rv-thumbs button[aria-current="true"] { border-color: var(--red); opacity: 1; }
+.rv-thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+@media (max-width: 600px) { .rv-stage .rv-btn { display: none; } }
 .hint { color: var(--muted); }
 @media (prefers-reduced-motion: reduce) { .panel, .panel .full, .panel .short, .panel .cover { transition: none !important; } }
 /* phones and tablets: vertical accordion */
@@ -475,9 +493,10 @@ const CASES = [
     res: "", resNote: "", video: "", image: "", link: "" },
   { chip: "флагман", cover: "yeti", bg: "var(--t-green)", fg: "#ffffff", client: "", format: "2D-анимация",
     title: "Yeti",
-    task: "",
-    did: "Анимационный сериал про зелёного Йети: вертикальные ролики для соцсетей и горизонтальные эпизоды.",
-    res: "", resNote: "", video: "", image: "", link: "" },
+    task: "Дать мем-токену лицо и характер, чтобы о нём говорили в соцсетях.",
+    did: "Придумали зелёного Йети-трейдера и нарисовали серию вертикальных 2D-роликов: жизнь трейдера, ночи у графиков, ролик к юбилею биржи LBank.",
+    res: "", resNote: "", video: "media/yeti/loop.mp4", image: "", link: "",
+    reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
   { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
     title: "«Лето в стакане»",
     task: "Вернуть детей к молоку без нравоучений.",
@@ -530,6 +549,7 @@ acc.innerHTML = CASES.map((c, i) => {
       <h3>${esc(c.title)}</h3>
       ${rows ? `<div class="tdr">${rows}</div>` : ""}
       ${c.res || c.resNote ? `<div class="res"><b>${esc(c.res)}</b><span>${esc(c.resNote)}</span></div>` : ""}
+      ${c.reels ? `<button class="reels-btn" type="button" data-case="${i}">смотреть ролики · ${c.reels.length}</button>` : ""}
       ${link}
     </div>
     ${media ? "" : `<span class="cover" aria-hidden="true">${esc(c.cover)}</span>`}
@@ -555,6 +575,58 @@ function setupAcc(box, onOpen) {
   });
 }
 setupAcc(acc);
+
+/* Просмотр серии вертикальных роликов кейса (поле reels) */
+(() => {
+  let box, vid, thumbs, count, list, cur, back;
+  function build() {
+    box = document.createElement("div");
+    box.className = "rv"; box.hidden = true;
+    box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
+    box.innerHTML = `<div class="rv-top"><div><b></b><span></span></div><button class="rv-btn" type="button" data-x aria-label="Закрыть">✕</button></div>
+      <div class="rv-stage"><button class="rv-btn" type="button" data-p aria-label="Предыдущий ролик">←</button><video controls playsinline preload="metadata"></video><button class="rv-btn" type="button" data-n aria-label="Следующий ролик">→</button></div>
+      <div class="rv-thumbs"></div>`;
+    document.body.appendChild(box);
+    vid = box.querySelector("video"); thumbs = box.querySelector(".rv-thumbs"); count = box.querySelector(".rv-top span");
+    box.querySelector("[data-x]").onclick = close;
+    box.querySelector("[data-p]").onclick = () => show(cur - 1);
+    box.querySelector("[data-n]").onclick = () => show(cur + 1);
+    box.addEventListener("click", e => { if (e.target === box || e.target.classList.contains("rv-stage")) close(); });
+    vid.addEventListener("ended", () => { if (cur < list.length - 1) show(cur + 1); });
+    document.addEventListener("keydown", e => {
+      if (box.hidden) return;
+      if (e.key === "Escape") close();
+      if (e.key === "ArrowRight") show(cur + 1);
+      if (e.key === "ArrowLeft") show(cur - 1);
+    });
+  }
+  function show(i) {
+    cur = (i + list.length) % list.length;
+    vid.poster = list[cur].poster || ""; vid.src = list[cur].src;
+    vid.play().catch(() => {});
+    count.textContent = `${cur + 1} / ${list.length}`;
+    [...thumbs.children].forEach((t, k) => t.setAttribute("aria-current", k === cur));
+    thumbs.children[cur].scrollIntoView({ block: "nearest", inline: "center" });
+  }
+  function open(c) {
+    if (!box) build();
+    back = document.activeElement; list = c.reels;
+    box.querySelector(".rv-top b").textContent = c.title;
+    thumbs.innerHTML = list.map((r, k) => `<button type="button" aria-label="Ролик ${k + 1}"><img src="${esc(r.poster)}" alt="" loading="lazy"></button>`).join("");
+    [...thumbs.children].forEach((t, k) => t.onclick = () => show(k));
+    box.hidden = false; document.body.style.overflow = "hidden";
+    show(0); box.querySelector("[data-x]").focus();
+  }
+  function close() {
+    vid.pause(); vid.removeAttribute("src"); vid.load();
+    box.hidden = true; document.body.style.overflow = "";
+    back && back.focus && back.focus({ preventScroll: true });
+  }
+  acc.addEventListener("click", e => {
+    const b = e.target.closest(".reels-btn");
+    if (b) { e.stopPropagation(); open(CASES[+b.dataset.case]); }
+  });
+})();
 if (!canHover) document.getElementById("accHint").textContent = "нажмите на кейс, чтобы раскрыть";
 
 /* Направления и их пайплайны. you: true — этап, который утверждает клиент. */
