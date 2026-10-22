@@ -446,7 +446,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   </div>
 </header>
 
-<!-- ПЕРВЫЙ ЭКРАН. Шоурил из всех кейсов: media/showreel.mp4 (1080p) и showreel-720.mp4 (телефоны); для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
+<!-- ПЕРВЫЙ ЭКРАН. Сейчас трейлер Yeti; шоурил из всех кейсов лежит в media/showreel.mp4 и showreel-720.mp4; для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
      Пока файла нет, играет анимированная заставка из обложек кейсов. -->
 <section class="reel" id="reel" style="padding-block:0">
   <div class="reel-frame">
@@ -458,14 +458,14 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <div class="slide"><b>км</b></div>
       <div class="slide"><b>1д</b></div>
     </div>
-    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/showreel.jpg" aria-label="Шоурил студии Каникулы">
-      <source src="media/showreel.mp4" type="video/mp4" media="(min-width: 900px)">
-      <source src="media/showreel-720.mp4" type="video/mp4">
+    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/trailer.jpg" aria-label="Трейлер сериала YETI: DYOR">
+      <source src="media/yeti/trailer-hq.mp4" type="video/mp4" media="(min-width: 900px)">
+      <source src="media/yeti/trailer-hero.mp4" type="video/mp4">
     </video>
     <div class="reel-shade"></div>
     <div class="reel-over">
       <div class="wrap">
-        <span class="reel-tag"><i></i>шоурил 2026</span>
+        <span class="reel-tag"><i></i>трейлер · YETI: DYOR</span>
         <div class="reel-btns">
           <button class="btn btn-light" id="soundBtn" type="button" hidden>со звуком</button>
         </div>
