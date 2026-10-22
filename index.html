@@ -116,7 +116,7 @@ nav.links a:hover { color: var(--ink); }
 /* cases: horizontal accordion, one screen */
 .acc { display: flex; gap: 8px; height: clamp(600px, 82vh, 760px); }
 .panel { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: 6px; cursor: pointer; transition: flex-grow .55s cubic-bezier(.3,.7,.2,1); outline-offset: 4px; }
-.panel.is-open { flex-grow: 9; cursor: default; }
+.panel.is-open { flex-grow: 5.5; cursor: default; }
 .panel > video, .panel > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .panel.has-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55) 35%, rgba(0,0,0,.8)); pointer-events: none; }
 .panel .cover { position: absolute; right: 0; bottom: 0; font-family: var(--display); font-weight: 800; font-size: clamp(80px, 11vw, 170px); line-height: .78; letter-spacing: -0.05em; transform: translateY(7%); white-space: nowrap; opacity: 0; transition: opacity .4s; z-index: 1; }
@@ -520,37 +520,7 @@ const CASES = [
     task: "Рассказать о продуктах бренда через истории, которые интересно смотреть и без рекламы.",
     did: "Короткие научно-популярные ролики о еде в истории: что ела императрица Цыси, чем угощали Елизавету I и откуда взялись крабовые палочки.",
     res: "", resNote: "", video: "media/okean/sci-loop.mp4", image: "", link: "",
-    reels: [1, 2, 3].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) },
-  { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
-    title: "«Лето в стакане»",
-    task: "Вернуть детей к молоку без нравоучений.",
-    did: "12 серий по 15 секунд про двор, где каждое лето длится вечно.",
-    res: "86 млн", resNote: "просмотров за сезон, продажи +23%", video: "", image: "", link: "" },
-  { chip: "ии-видео", cover: "48ч", bg: "var(--t-blue)", fg: "#ffffff", client: "банк · 2026", format: "генеративный ролик",
-    title: "«Деньги во сне»",
-    task: "Запуск продукта перенесли на неделю раньше.",
-    did: "Сюрреалистичный ИИ-ролик от сценария до эфира за двое суток.",
-    res: "31 млн", resNote: "охват, 4 отраслевые награды", video: "", image: "", link: "" },
-  { chip: "гибрид", cover: "×3", bg: "#e3191c", fg: "#ffffff", client: "музыкальный лейбл · 2025", format: "съёмка + анимация + ии",
-    title: "Клип «Надувной круг»",
-    task: "Клип, который запомнят в коротких видео.",
-    did: "Артист в настоящем бассейне, вокруг рисованные волны и нейросетевые медузы. Каждая сцена собрана из трёх слоёв.",
-    res: "54 млн", resNote: "просмотров, тренд в коротких видео", video: "", image: "", link: "" },
-  { chip: "медиа", cover: "0→2м", bg: "var(--t-black)", fg: "#ffffff", client: "фуд-ритейл · 2025–2026", format: "ведение каналов",
-    title: "Канал, который смотрят ради шуток",
-    task: "Запустить аккаунт сети с нуля.",
-    did: "Рубрика с говорящими продуктами, 5 роликов в неделю.",
-    res: "2,1 млн", resNote: "подписчиков за 14 месяцев", video: "", image: "", link: "" },
-  { chip: "продакшн", cover: "км", bg: "var(--t-green)", fg: "#ffffff", client: "спортивный бренд · 2025", format: "рекламный фильм",
-    title: "«Каждый километр»",
-    task: "Показать бег без глянца.",
-    did: "Обычные люди на утренних пробежках в шести городах. Без актёров и студии, на рассвете.",
-    res: "19 млн", resNote: "просмотров, ролик года по версии клиента", video: "", image: "", link: "" },
-  { chip: "вирус", cover: "1д", bg: "var(--t-grey)", fg: "var(--ink)", client: "мобильный оператор · 2026", format: "ии + 2D",
-    title: "Мем за один день",
-    task: "Успеть ответить на инфоповод, пока он живой.",
-    did: "Поймали инфоповод утром, к вечеру выпустили анимированный ответ бренда. Его перепостили конкуренты.",
-    res: "12 млн", resNote: "просмотров за первые 24 часа", video: "", image: "", link: "" }
+    reels: [1, 2, 3].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) }
 ];
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
