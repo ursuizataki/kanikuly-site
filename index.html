@@ -383,7 +383,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   </div>
 </header>
 
-<!-- ПЕРВЫЙ ЭКРАН. Сейчас здесь ролик Океаномании; для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
+<!-- ПЕРВЫЙ ЭКРАН. Сейчас здесь трейлер Yeti (1080p на компьютерах, 720p на телефонах); для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
      Пока файла нет, играет анимированная заставка из обложек кейсов. -->
 <section class="reel" id="reel" style="padding-block:0">
   <div class="reel-frame">
@@ -395,13 +395,14 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <div class="slide"><b>км</b></div>
       <div class="slide"><b>1д</b></div>
     </div>
-    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/okean/hero.jpg" aria-label="Ролик из сериала Океаномания">
-      <source src="media/okean/hero.mp4" type="video/mp4">
+    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/trailer.jpg" aria-label="Трейлер сериала YETI: DYOR">
+      <source src="media/yeti/trailer-hq.mp4" type="video/mp4" media="(min-width: 900px)">
+      <source src="media/yeti/trailer-hero.mp4" type="video/mp4">
     </video>
     <div class="reel-shade"></div>
     <div class="reel-over">
       <div class="wrap">
-        <span class="reel-tag"><i></i>океаномания · ии-сериал</span>
+        <span class="reel-tag"><i></i>трейлер · YETI: DYOR</span>
         <div class="reel-btns">
           <button class="btn btn-light" id="soundBtn" type="button" hidden>со звуком</button>
         </div>
@@ -492,6 +493,13 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
    link — ссылка на опубликованный ролик или пост; пока пусто, кнопка «смотреть» не показывается. */
 const CASES = [
   /* Флагманы. Пустые поля на сайте не показываются: дописывайте по мере появления данных. */
+  { chip: "флагман", cover: "yeti", bg: "var(--t-green)", fg: "#ffffff", client: "собственный проект студии", format: "2D-анимация",
+    title: "Yeti",
+    task: "Вырастить своего героя, которого смотрят ради него самого, а бренды приходят за интеграциями.",
+    did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
+    res: "", resNote: "Платные интеграции и коллаборации с брендами: LBank, Polymarket.", video: "media/yeti/loop.mp4", image: "", link: "",
+    trailer: { title: "сериал «YETI: DYOR»", note: "Следующий шаг вселенной: длинный формат про Йети, аферы, полицию и тюрьму.", src: "media/yeti/trailer-hq.mp4", poster: "media/yeti/trailer.jpg" },
+    reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
   { chip: "флагман", cover: "океан", bg: "var(--t-blue)", fg: "#ffffff", client: "", format: "вирусный ии-сериал",
     title: "Океаномания",
     task: "Сделать рыбу и морепродукты темой, которую пересылают друзьям.",
@@ -499,13 +507,6 @@ const CASES = [
     res: "20+ млн", resNote: "просмотров рекламного контента. Охват серии больше 3 млн, +25 000 подписчиков.",
     video: "media/okean/loop.mp4", image: "", link: "",
     reels: [1, 2, 3, 4, 5, 6].map(k => ({ src: `media/okean/okean${k}.mp4`, poster: `media/okean/okean${k}.jpg` })) },
-  { chip: "флагман", cover: "yeti", bg: "var(--t-green)", fg: "#ffffff", client: "собственный проект студии", format: "2D-анимация",
-    title: "Yeti",
-    task: "Вырастить своего героя, которого смотрят ради него самого, а бренды приходят за интеграциями.",
-    did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
-    res: "", resNote: "Платные интеграции и коллаборации с брендами: LBank, Polymarket.", video: "media/yeti/loop.mp4", image: "", link: "",
-    trailer: { title: "сериал «YETI: DYOR»", note: "Следующий шаг вселенной: длинный формат про Йети, аферы, полицию и тюрьму.", src: "media/yeti/trailer.mp4", poster: "media/yeti/trailer.jpg" },
-    reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
   { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
     title: "«Лето в стакане»",
     task: "Вернуть детей к молоку без нравоучений.",
