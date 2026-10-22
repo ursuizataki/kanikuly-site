@@ -507,6 +507,12 @@ const CASES = [
     res: "20+ млн", resNote: "просмотров рекламного контента. Охват серии больше 3 млн, +25 000 подписчиков.",
     video: "media/okean/loop.mp4", image: "", link: "",
     reels: [1, 2, 3, 4, 5, 6].map(k => ({ src: `media/okean/okean${k}.mp4`, poster: `media/okean/okean${k}.jpg` })) },
+  { chip: "ии-реклама", cover: "3в1", bg: "#e3191c", fg: "#ffffff", client: "Океаномания", format: "ии-видео",
+    title: "3 истории в 1 видео",
+    task: "Встроить продукт в историю так, чтобы рекламу досмотрели до конца.",
+    did: "Три коротких легенды о том, как появились тирамису, рыбный бургер и чипсы. Фарш «Океаномании» стал героем средней истории.",
+    res: "", resNote: "", video: "media/okean/three-loop.mp4", image: "", link: "",
+    reels: [{ src: "media/okean/three.mp4", poster: "media/okean/three.jpg" }] },
   { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
     title: "«Лето в стакане»",
     task: "Вернуть детей к молоку без нравоучений.",
@@ -562,7 +568,7 @@ acc.innerHTML = CASES.map((c, i) => {
       ${c.trailer ? `<div class="trl"><span class="k">${esc(c.trailer.title)}</span><span>${esc(c.trailer.note)}</span></div>` : ""}
       ${c.reels || c.trailer ? `<div class="btns">
         ${c.trailer ? `<button class="reels-btn" type="button" data-case="${i}" data-kind="trailer">трейлер сериала</button>` : ""}
-        ${c.reels ? `<button class="reels-btn alt" type="button" data-case="${i}" data-kind="reels">ролики · ${c.reels.length}</button>` : ""}
+        ${c.reels ? `<button class="reels-btn alt" type="button" data-case="${i}" data-kind="reels">${c.reels.length === 1 ? "смотреть ролик" : `ролики · ${c.reels.length}`}</button>` : ""}
       </div>` : ""}
       ${link}
     </div>
