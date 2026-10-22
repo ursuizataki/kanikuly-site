@@ -114,9 +114,9 @@ nav.links a:hover { color: var(--ink); }
 .band-note a { color: var(--on-red); }
 
 /* cases: horizontal accordion, one screen */
-.acc { display: flex; gap: 8px; height: clamp(460px, 68vh, 640px); }
+.acc { display: flex; gap: 8px; height: clamp(600px, 82vh, 760px); }
 .panel { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: 6px; cursor: pointer; transition: flex-grow .55s cubic-bezier(.3,.7,.2,1); outline-offset: 4px; }
-.panel.is-open { flex-grow: 5.5; cursor: default; }
+.panel.is-open { flex-grow: 9; cursor: default; }
 .panel > video, .panel > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .panel.has-media::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,.55) 35%, rgba(0,0,0,.8)); pointer-events: none; }
 .panel .cover { position: absolute; right: 0; bottom: 0; font-family: var(--display); font-weight: 800; font-size: clamp(80px, 11vw, 170px); line-height: .78; letter-spacing: -0.05em; transform: translateY(7%); white-space: nowrap; opacity: 0; transition: opacity .4s; z-index: 1; }
@@ -129,6 +129,8 @@ nav.links a:hover { color: var(--ink); }
 .panel.is-open .short { opacity: 0; pointer-events: none; }
 /* opened content */
 .panel .full { position: absolute; left: 0; top: 0; bottom: 0; width: min(520px, 100%); padding: 60px clamp(16px, 2.2vw, 28px) 24px; display: flex; flex-direction: column; gap: 14px; z-index: 2; opacity: 0; transform: translateY(8px); transition: opacity .2s, transform .2s; pointer-events: none; }
+.panel .full { overflow-y: auto; scrollbar-width: none; }
+.panel .full::-webkit-scrollbar { display: none; }
 .panel.is-open .full { opacity: 1; transform: none; transition: opacity .35s .22s, transform .35s .22s; pointer-events: auto; }
 .panel .full .meta { font-family: var(--mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
 .panel .full h3 { font-size: clamp(24px, 2.6vw, 34px); line-height: 1.1; }
@@ -497,7 +499,7 @@ const CASES = [
     title: "Yeti",
     task: "Вырастить своего героя, которого смотрят ради него самого, а бренды приходят за интеграциями.",
     did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
-    res: "", resNote: "Платные интеграции и коллаборации с брендами: LBank, Polymarket.", video: "media/yeti/loop.mp4", image: "", link: "",
+    res: "3B+", resNote: "больше 3 миллиардов просмотров. Платные интеграции и коллаборации с брендами: LBank, Polymarket.", video: "media/yeti/loop.mp4", image: "", link: "",
     trailer: { title: "сериал «YETI: DYOR»", note: "Следующий шаг вселенной: длинный формат про Йети, аферы, полицию и тюрьму.", src: "media/yeti/trailer-hq.mp4", poster: "media/yeti/trailer.jpg" },
     reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
   { chip: "флагман", cover: "океан", bg: "var(--t-blue)", fg: "#ffffff", client: "", format: "вирусный ии-сериал",
@@ -513,6 +515,12 @@ const CASES = [
     did: "Серия роликов, где в каждом три короткие легенды о том, как появились знаменитые блюда. Продукт «Океаномании» становится героем одной из историй.",
     res: "", resNote: "", video: "media/okean/three-loop.mp4", image: "", link: "",
     reels: ["three", "three2", "three3"].map(n => ({ src: `media/okean/${n}.mp4`, poster: `media/okean/${n}.jpg` })) },
+  { chip: "науч-поп", cover: "наука", bg: "var(--t-black)", fg: "#ffffff", client: "Океаномания", format: "ии-видео · серия",
+    title: "Науч-поп серия",
+    task: "Рассказать о продуктах бренда через истории, которые интересно смотреть и без рекламы.",
+    did: "Короткие научно-популярные ролики о еде в истории: что ела императрица Цыси, чем угощали Елизавету I и откуда взялись крабовые палочки.",
+    res: "", resNote: "", video: "media/okean/sci-loop.mp4", image: "", link: "",
+    reels: [1, 2, 3].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) },
   { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
     title: "«Лето в стакане»",
     task: "Вернуть детей к молоку без нравоучений.",
