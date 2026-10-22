@@ -114,7 +114,7 @@ nav.links a:hover { color: var(--ink); }
 .band-note a { color: var(--on-red); }
 
 /* cases: horizontal accordion, one screen */
-.acc { display: flex; gap: 8px; height: clamp(600px, 82vh, 760px); }
+.acc { --ph: clamp(600px, 82vh, 760px); display: flex; gap: 8px; height: var(--ph); }
 .panel { position: relative; flex: 1 1 0; min-width: 0; overflow: hidden; border-radius: 6px; cursor: pointer; transition: flex-grow .55s cubic-bezier(.3,.7,.2,1); outline-offset: 4px; }
 .panel.is-open { flex-grow: 5.5; cursor: default; }
 .panel > video, .panel > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
@@ -363,6 +363,67 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   .fab { font-size: 15px; padding: 12px 18px; }
   footer { padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px)); }
 }
+/* opened case with video: text on a dark ground, video in its own window */
+.panel.has-media { --vh: calc(var(--ph) * .66); --gap: clamp(16px, 2.4vw, 32px); }
+.panel.has-media::after { transition: opacity .3s; }
+.panel.has-media.is-open { background: #111 !important; color: #fff !important; }
+.panel.has-media.is-open::after { opacity: 0; }
+.panel.has-media.is-open > video { inset: auto; top: 50%; right: var(--gap); width: auto; height: var(--vh); aspect-ratio: 9 / 16; transform: translateY(-50%); border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.55); animation: vidIn .5s .12s both; }
+.panel.has-media.is-open .full { width: auto; right: calc(var(--vh) * 9 / 16 + var(--gap) * 2); max-width: 560px; justify-content: center; }
+@keyframes vidIn { from { opacity: 0; transform: translateY(-50%) scale(.94); } to { opacity: 1; transform: translateY(-50%) scale(1); } }
+@media (max-width: 860px) {
+  .panel.is-open.has-media { height: auto; min-height: 0; }
+  .panel.has-media.is-open > video { position: relative; inset: auto; transform: none; display: block; width: min(64%, 280px); height: auto; margin: 56px auto 0; animation: none; }
+  .panel.has-media.is-open .full { position: relative; right: auto; width: 100%; max-width: none; min-height: 0; padding: 20px 16px; }
+}
+@media (prefers-reduced-motion: reduce) { .panel.has-media.is-open > video { animation: none; } }
+/* phones and tablets: cases as a swipeable strip of cards that snap into place,
+   video on top without text over it, short text below */
+@media (max-width: 860px) {
+  #cases { flex-direction: row; height: auto; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none;
+    margin-inline: calc(-1 * max(16px, env(safe-area-inset-left, 0px))); padding-inline: max(16px, env(safe-area-inset-left, 0px)); scroll-padding-inline: max(16px, env(safe-area-inset-left, 0px)); }
+  #cases::-webkit-scrollbar { display: none; }
+  #cases .panel { flex: 0 0 min(86%, 420px); height: auto; min-height: 0; scroll-snap-align: start; background: #111 !important; color: #fff !important; cursor: default; display: flex; flex-direction: column; transition: none; }
+  #cases .panel::after, #cases .panel .short, #cases .panel .cover { display: none; }
+  #cases .panel > video, #cases .panel > img { position: relative; inset: auto; transform: none; display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; object-fit: cover; margin: 0; border-radius: 0; box-shadow: none; animation: none; }
+  #cases .panel .chip { top: 12px; left: 12px; transform: none; }
+  #cases .panel .full { position: relative; inset: auto; width: 100%; max-width: none; min-height: 0; padding: 16px 16px 18px; gap: 10px; opacity: 1; transform: none; pointer-events: auto; justify-content: flex-start; overflow: visible; }
+  #cases .panel .full h3 { font-size: 24px; }
+  #cases .panel .tdr { font-size: 15px; }
+  #cases .panel .tdr > div:first-child, #cases .panel .tdr .k, #cases .panel .trl { display: none; }
+  #cases .panel .tdr div { grid-template-columns: minmax(0, 1fr); }
+  #cases .panel .res b { font-size: 30px; }
+  #cases .panel .res span { font-size: 13px; }
+  #cases .reels-btn { font-size: 14px; padding: 10px 14px; }
+}
+/* stage cards: badges sit on one baseline at the bottom */
+.st { display: flex; flex-direction: column; gap: 6px; }
+.st .ok { margin-top: auto; align-self: flex-start; }
+.st p { margin-bottom: 6px; }
+
+/* numbers: a road-sign plate — light ground inside a thick red rim */
+.band { background: var(--paper); color: var(--ink); padding-block: clamp(32px, 5vw, 64px); }
+.band > .wrap { position: relative; padding-block: clamp(28px, 4vw, 52px); padding-left: calc(max(16px, env(safe-area-inset-left, 0px)) + clamp(22px, 4vw, 56px)); padding-right: calc(max(16px, env(safe-area-inset-right, 0px)) + clamp(22px, 4vw, 56px)); }
+.band > .wrap::before { content: ""; position: absolute; top: 0; bottom: 0; left: max(16px, env(safe-area-inset-left, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); border: clamp(8px, 1.2vw, 14px) solid var(--red); border-radius: clamp(18px, 2.4vw, 32px); pointer-events: none; }
+.band .mono { color: var(--red); opacity: 1; }
+.band-note a { color: var(--ink); }
+.nums > div { border-color: var(--line) !important; }
+
+/* clients: a sponsor wall of equal cells */
+.clients { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); border-left: 1px solid var(--line); font-size: inherit; }
+.cl { display: flex; align-items: center; justify-content: center; min-height: clamp(96px, 11vw, 150px); padding: 16px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); font-family: var(--display); font-weight: 600; font-size: clamp(16px, 1.8vw, 24px); letter-spacing: -0.02em; color: var(--ink); text-align: center; }
+.cl img { max-width: 70%; max-height: 56px; object-fit: contain; }
+@media (max-width: 760px) { .clients { grid-template-columns: repeat(2, minmax(0, 1fr)); } .cl:last-child:nth-child(odd) { grid-column: 1 / -1; } }
+
+/* services on phones: every direction visible at once as tiles, no sideways scrolling, no tab tails */
+@media (max-width: 860px) {
+  .tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; overflow: visible; margin: 0 0 12px; padding: 0; scroll-snap-type: none; }
+  .tab { min-width: 0; min-height: 64px; border-radius: 12px; padding: 12px; font-size: 14px; scroll-snap-align: none; }
+  .tab:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  .tab .nm { white-space: normal; }
+  .tab[aria-selected="true"]::before, .tab[aria-selected="true"]::after { display: none; }
+  .tabpanel, .tabpanel.not-first, .tabpanel.is-last { border-radius: 14px; }
+}
 </style>
 
 </head>
@@ -385,7 +446,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   </div>
 </header>
 
-<!-- ПЕРВЫЙ ЭКРАН. Сейчас здесь трейлер Yeti (1080p на компьютерах, 720p на телефонах); для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
+<!-- ПЕРВЫЙ ЭКРАН. Шоурил из всех кейсов: media/showreel.mp4 (1080p) и showreel-720.mp4 (телефоны); для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
      Пока файла нет, играет анимированная заставка из обложек кейсов. -->
 <section class="reel" id="reel" style="padding-block:0">
   <div class="reel-frame">
@@ -397,14 +458,14 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <div class="slide"><b>км</b></div>
       <div class="slide"><b>1д</b></div>
     </div>
-    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/trailer.jpg" aria-label="Трейлер сериала YETI: DYOR">
-      <source src="media/yeti/trailer-hq.mp4" type="video/mp4" media="(min-width: 900px)">
-      <source src="media/yeti/trailer-hero.mp4" type="video/mp4">
+    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/showreel.jpg" aria-label="Шоурил студии Каникулы">
+      <source src="media/showreel.mp4" type="video/mp4" media="(min-width: 900px)">
+      <source src="media/showreel-720.mp4" type="video/mp4">
     </video>
     <div class="reel-shade"></div>
     <div class="reel-over">
       <div class="wrap">
-        <span class="reel-tag"><i></i>трейлер · YETI: DYOR</span>
+        <span class="reel-tag"><i></i>шоурил 2026</span>
         <div class="reel-btns">
           <button class="btn btn-light" id="soundBtn" type="button" hidden>со звуком</button>
         </div>
@@ -465,7 +526,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <span class="mono">бренды, лейблы, платформы</span>
     </div>
     <div class="clients">
-      <span>Polymarket</span><span>LBank</span><span>Океаномания</span><span>Л'Этуаль</span><span>Ганвест</span>
+      <div class="cl"><span>Polymarket</span></div><div class="cl"><span>LBank</span></div><div class="cl"><span>Океаномания</span></div><div class="cl"><span>Л'Этуаль</span></div><div class="cl"><span>Ганвест</span></div>
     </div>
   </div>
 </section>
@@ -498,7 +559,7 @@ const CASES = [
     title: "Yeti",
     task: "Вырастить своего героя, которого смотрят ради него самого, а бренды приходят за интеграциями.",
     did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
-    res: "3B+", resNote: "больше 3 миллиардов просмотров. Платные интеграции и коллаборации с брендами: Polymarket, LBank.", video: "media/yeti/loop.mp4", image: "", link: "",
+    res: "3 млрд+", resNote: "просмотров. Платные интеграции и коллаборации с брендами: Polymarket, LBank.", video: "media/yeti/loop.mp4", image: "", link: "",
     trailer: { title: "сериал «YETI: DYOR»", note: "Следующий шаг вселенной: длинный формат про Йети, аферы, полицию и тюрьму.", src: "media/yeti/trailer-hq.mp4", poster: "media/yeti/trailer.jpg" },
     reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
   { chip: "флагман", cover: "океан", bg: "var(--t-blue)", fg: "#ffffff", client: "", format: "вирусный ии-сериал",
@@ -630,7 +691,7 @@ setupAcc(acc);
     else open(c.title, c.reels);
   });
 })();
-if (!canHover) document.getElementById("accHint").textContent = "нажмите на кейс, чтобы раскрыть";
+if (!canHover || matchMedia("(max-width: 860px)").matches) document.getElementById("accHint").textContent = "листайте кейсы вбок →";
 
 /* Направления и их пайплайны. you: true — этап, который утверждает клиент. */
 const SERVICES = [
@@ -642,7 +703,7 @@ const SERVICES = [
       ["раскадровка и стиль", "Рисуем раскадровку и фиксируем визуальный стиль. Дальше производство идёт строго по утверждённому.", "утверждаете вы", true],
       ["пилот или аниматик", "Первая сборка в движении: ритм, свет, характер. Самое дешёвое место для крупных правок.", "утверждаете вы", true],
       ["производство", "Генерация кадров, видео, монтаж, звук. Показываем промежуточные версии в общем чате.", "отчёт раз в неделю"],
-      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "традиционная анимация", cover: "2d", bg: "#e3191c", fg: "#ffffff",
     desc: "Покадровая 2D, перекладка, стоп-моушен. Когда нужна тёплая ручная линия.",
@@ -653,7 +714,7 @@ const SERVICES = [
       ["дизайн персонажей и фонов", "Рисуем героев, фоны и цветовую палитру.", "утверждаете вы", true],
       ["аниматик", "Раскадровка в движении со звуком. Здесь проверяем ритм и тайминг.", "утверждаете вы", true],
       ["анимация и композ", "Анимация, заливка, композ, звук и музыка.", "отчёт раз в неделю"],
-      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "гибрид медиа", cover: "×3", bg: "var(--t-yellow)", fg: "#141414",
     desc: "Живые съёмки, анимация и нейросети в одном кадре, собранные по слоям.",
@@ -664,7 +725,7 @@ const SERVICES = [
       ["съёмка", "Снимаем живой слой: артист, площадка, свет под будущую графику.", ""],
       ["анимация и генерация", "Рисуем и генерируем слои поверх отснятого материала.", "отчёт раз в неделю"],
       ["сборка и звук", "Композ, цвет, монтаж и звук.", "утверждаете вы", true],
-      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "видеопродакшн", cover: "rec", bg: "var(--t-green)", fg: "#ffffff",
     desc: "Реклама, клипы, имиджевые фильмы. Полный цикл от сценария до поста.",
@@ -675,7 +736,7 @@ const SERVICES = [
       ["препродакшн", "Кастинг, локации, команда, календарь съёмок.", "утверждаете вы", true],
       ["съёмка", "Снимаем по утверждённому плану.", ""],
       ["монтаж, цвет, звук", "Собираем ролик, показываем черновую и чистовую сборки.", "утверждаете вы", true],
-      ["финал", "Готовый ролик во всех форматах под нужные площадки.", ""]
+      ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "ведение медиа", cover: "0→2м", bg: "var(--t-black)", fg: "#ffffff",
     desc: "Каналы и аккаунты брендов: рубрики, регулярный выпуск, рост в цифрах.",
