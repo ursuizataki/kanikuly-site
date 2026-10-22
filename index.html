@@ -141,6 +141,12 @@ nav.links a:hover { color: var(--ink); }
 .panel .full a { align-self: flex-start; font-weight: 600; font-size: 14px; padding: 10px 16px; border-radius: 999px; background: #fff; color: #141414; text-decoration: none; }
 .reels-btn { align-self: flex-start; font-family: var(--body); font-weight: 600; font-size: 15px; padding: 12px 18px; border: 0; border-radius: 999px; background: var(--red); color: var(--on-red); cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
 .reels-btn::before { content: ""; border-left: 9px solid currentColor; border-block: 6px solid transparent; }
+.reels-btn.alt { background: #fff; color: #141414; }
+.panel .full .btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.panel .trl { display: grid; gap: 4px; max-width: 40ch; font-size: 15px; padding-top: 12px; border-top: 1px solid color-mix(in srgb, currentColor 30%, transparent); }
+.panel .trl .k { font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
+.rv-stage video.wide { height: auto; width: 100%; max-width: 1280px; max-height: 100%; aspect-ratio: 16 / 9; }
+.rv.single .rv-thumbs, .rv.single .rv-stage .rv-btn, .rv.single .rv-top span { display: none; }
 
 /* vertical reels viewer */
 .rv { position: fixed; inset: 0; z-index: 60; background: rgba(10,10,11,.94); color: #fff; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; gap: 12px; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(12px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
@@ -496,6 +502,7 @@ const CASES = [
     task: "Вырастить своего героя, которого смотрят ради него самого, а бренды приходят за интеграциями.",
     did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
     res: "", resNote: "Платные интеграции и коллаборации с брендами: LBank, Polymarket.", video: "media/yeti/loop.mp4", image: "", link: "",
+    trailer: { title: "сериал «YETI: DYOR»", note: "Следующий шаг вселенной: длинный формат про Йети, аферы, полицию и тюрьму.", src: "media/yeti/trailer.mp4", poster: "media/yeti/trailer.jpg" },
     reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
   { chip: "анимация", cover: "лето", bg: "var(--t-yellow)", fg: "#141414", client: "молочный бренд · 2026", format: "2D покадровая",
     title: "«Лето в стакане»",
@@ -549,7 +556,11 @@ acc.innerHTML = CASES.map((c, i) => {
       <h3>${esc(c.title)}</h3>
       ${rows ? `<div class="tdr">${rows}</div>` : ""}
       ${c.res || c.resNote ? `<div class="res"><b>${esc(c.res)}</b><span>${esc(c.resNote)}</span></div>` : ""}
-      ${c.reels ? `<button class="reels-btn" type="button" data-case="${i}">смотреть ролики · ${c.reels.length}</button>` : ""}
+      ${c.trailer ? `<div class="trl"><span class="k">${esc(c.trailer.title)}</span><span>${esc(c.trailer.note)}</span></div>` : ""}
+      ${c.reels || c.trailer ? `<div class="btns">
+        ${c.trailer ? `<button class="reels-btn" type="button" data-case="${i}" data-kind="trailer">трейлер сериала</button>` : ""}
+        ${c.reels ? `<button class="reels-btn alt" type="button" data-case="${i}" data-kind="reels">ролики · ${c.reels.length}</button>` : ""}
+      </div>` : ""}
       ${link}
     </div>
     ${media ? "" : `<span class="cover" aria-hidden="true">${esc(c.cover)}</span>`}
@@ -603,15 +614,17 @@ setupAcc(acc);
   function show(i) {
     cur = (i + list.length) % list.length;
     vid.poster = list[cur].poster || ""; vid.src = list[cur].src;
+    vid.classList.toggle("wide", !!list[cur].wide);
     vid.play().catch(() => {});
     count.textContent = `${cur + 1} / ${list.length}`;
     [...thumbs.children].forEach((t, k) => t.setAttribute("aria-current", k === cur));
     thumbs.children[cur].scrollIntoView({ block: "nearest", inline: "center" });
   }
-  function open(c) {
+  function open(title, items) {
     if (!box) build();
-    back = document.activeElement; list = c.reels;
-    box.querySelector(".rv-top b").textContent = c.title;
+    back = document.activeElement; list = items;
+    box.classList.toggle("single", list.length === 1);
+    box.querySelector(".rv-top b").textContent = title;
     thumbs.innerHTML = list.map((r, k) => `<button type="button" aria-label="Ролик ${k + 1}"><img src="${esc(r.poster)}" alt="" loading="lazy"></button>`).join("");
     [...thumbs.children].forEach((t, k) => t.onclick = () => show(k));
     box.hidden = false; document.body.style.overflow = "hidden";
@@ -624,7 +637,11 @@ setupAcc(acc);
   }
   acc.addEventListener("click", e => {
     const b = e.target.closest(".reels-btn");
-    if (b) { e.stopPropagation(); open(CASES[+b.dataset.case]); }
+    if (!b) return;
+    e.stopPropagation();
+    const c = CASES[+b.dataset.case];
+    if (b.dataset.kind === "trailer") open(`${c.title} · трейлер`, [{ ...c.trailer, wide: true }]);
+    else open(c.title, c.reels);
   });
 })();
 if (!canHover) document.getElementById("accHint").textContent = "нажмите на кейс, чтобы раскрыть";
