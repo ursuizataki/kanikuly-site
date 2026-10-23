@@ -424,6 +424,8 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   .tab[aria-selected="true"]::before, .tab[aria-selected="true"]::after { display: none; }
   .tabpanel, .tabpanel.not-first, .tabpanel.is-last { border-radius: 14px; }
 }
+.mob-only { display: none; }
+@media (max-width: 600px) { .mob-only { display: inline-flex; } }
 </style>
 
 </head>
@@ -481,6 +483,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <div class="reel-btns">
         <a class="btn btn-ghost" href="#work">смотреть работы</a>
         <a class="btn btn-ghost" href="#services">как работаем</a>
+        <a class="btn btn-red mob-only" href="#contact">связаться</a>
       </div>
     </div>
   </div>
@@ -871,7 +874,15 @@ document.getElementById("copyBtn").addEventListener("click", async e => {
   const fab = document.getElementById("fab");
   const contact = document.getElementById("contact");
   if (!("IntersectionObserver" in window)) return;
-  new IntersectionObserver(([e]) => fab.classList.toggle("away", e.isIntersecting), { threshold: 0.25 }).observe(contact);
+  /* на телефоне в начале страницы кнопка стоит в тексте, плавающая появляется после первого экрана */
+  const intro = document.querySelector(".intro");
+  const phone = matchMedia("(max-width: 600px)");
+  const seen = new Map();
+  const update = () => fab.classList.toggle("away", !!seen.get(contact) || (phone.matches && !!seen.get(intro)));
+  const io = new IntersectionObserver(es => { es.forEach(e => seen.set(e.target, e.isIntersecting)); update(); }, { threshold: 0.25 });
+  io.observe(contact);
+  new IntersectionObserver(es => { es.forEach(e => seen.set(intro, e.isIntersecting || e.boundingClientRect.top > 0)); update(); }).observe(intro);
+  phone.addEventListener("change", update);
 })();
 </script>
 
