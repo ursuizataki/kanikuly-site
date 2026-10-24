@@ -564,7 +564,7 @@ const CASES = [
     did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
     res: "3 млрд+", resNote: "просмотров. Платные интеграции и коллаборации с брендами: Polymarket, LBank.", video: "media/yeti/loop.mp4", image: "", link: "",
     trailer: { title: "сериал «YETI: DYOR»", note: "Следующий шаг вселенной: длинный формат про Йети, аферы, полицию и тюрьму.", src: "media/yeti/trailer-hq.mp4", poster: "media/yeti/trailer.jpg" },
-    reels: Array.from({ length: 12 }, (_, k) => ({ src: `media/yeti/yeti${k + 1}.mp4`, poster: `media/yeti/yeti${k + 1}.jpg` })) },
+    reels: [2, 10, 11, 7, 3, 1, 4, 5, 6, 8, 9, 12].map(k => ({ src: `media/yeti/yeti${k}.mp4`, poster: `media/yeti/yeti${k}.jpg` })) },
   { chip: "флагман", cover: "океан", bg: "var(--t-blue)", fg: "#ffffff", client: "", format: "вирусный ии-сериал",
     title: "Океаномания",
     task: "Сделать рыбу и морепродукты темой, которую пересылают друзьям.",
