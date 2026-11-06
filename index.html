@@ -584,7 +584,7 @@ const CASES = [
     task: "Рассказать о продуктах бренда через истории, которые интересно смотреть и без рекламы.",
     did: "Короткие научно-популярные ролики о еде в истории: что ела императрица Цыси, чем угощали Елизавету I и откуда взялись крабовые палочки.",
     res: "25+ млн", resNote: "просмотров", video: "media/okean/sci-loop.mp4", image: "", link: "",
-    reels: [1, 2, 3].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) }
+    reels: [1, 2, 3, 4].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) }
 ];
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
