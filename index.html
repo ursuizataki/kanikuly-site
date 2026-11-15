@@ -51,8 +51,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--red); outline-o
 .mono { font-family: var(--mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 h1, h2, h3 { font-family: var(--display); font-weight: 600; text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
 p { margin: 0; }
-section { padding-block: clamp(64px, 10vw, 128px); }
-.sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: clamp(32px, 5vw, 56px); }
+section { padding-block: clamp(44px, 5.5vw, 76px); }
+.sec-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: clamp(20px, 3vw, 36px); }
 .sec-head h2 { font-size: clamp(36px, 6vw, 72px); line-height: 1; }
 
 /* header */
@@ -65,7 +65,7 @@ nav.links a { text-decoration: none; color: var(--muted); }
 nav.links a:hover { color: var(--ink); }
 nav.links .lang { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink); border: 1px solid var(--line, currentColor); border-radius: 999px; padding: 3px 10px; margin-top: -4px; }
 @media (max-width: 720px) { nav.links .opt { display: none; } }
-@media (max-width: 420px) { .brand span { display: none; } }
+@media (max-width: 420px) { .brand span { display: none; } nav.links { gap: 10px; } nav.links .lang { padding: 3px 7px; } }
 
 /* showreel */
 .reel { position: relative; background: var(--reel-bg); color: var(--reel-fg); overflow: hidden; }
@@ -96,7 +96,7 @@ nav.links .lang { font-family: var(--mono); font-size: 13px; text-transform: upp
 .btn-ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
 
 /* intro */
-.intro { padding-block: clamp(48px, 7vw, 96px) clamp(40px, 6vw, 80px); }
+.intro { padding-block: clamp(36px, 4.5vw, 64px) clamp(32px, 4vw, 56px); }
 .intro-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 72px); align-items: end; }
 @media (max-width: 860px) { .intro-grid { grid-template-columns: 1fr; } }
 .intro h1 { font-size: clamp(40px, 7.4vw, 104px); line-height: .95; font-weight: 800; }
@@ -269,10 +269,10 @@ nav.links .lang { font-family: var(--mono); font-size: 13px; text-transform: upp
 /* bigger tabs, compact panel so the whole block fits one screen */
 .tab:first-child[aria-selected="true"]::before, .tab:last-child[aria-selected="true"]::after { display: none; }
 .tabpanel.is-last { border-top-right-radius: 0; }
-#services { padding-block: clamp(40px, 6vw, 80px); }
+#services { padding-block: clamp(32px, 4vw, 56px); }
 #services .sec-head { margin-bottom: 20px; }
-.tabs { gap: 6px; }
-.tab { flex: 1 1 0; min-width: 150px; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 16px 18px 18px; min-height: 104px; border-radius: 14px 14px 0 0; font-size: clamp(16px, 1.6vw, 21px); line-height: 1.1; white-space: normal; text-align: left; }
+.tabs { gap: 6px; container-type: inline-size; }
+.tab { flex: 1 1 0; min-width: 0; flex-direction: column; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 16px 14px 18px; min-height: 104px; border-radius: 14px 14px 0 0; font-size: clamp(12px, calc((100cqw - 30px) / 58 - 2.9px), 20px); hyphens: manual; line-height: 1.1; white-space: normal; text-align: left; }
 .tab .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; }
 .tab .dot { width: 12px; height: 12px; }
 .tab .cnt { font-family: var(--mono); font-weight: 400; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; opacity: .7; }
@@ -444,8 +444,6 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 }
 .mob-only { display: none; }
 @media (max-width: 600px) { .mob-only { display: inline-flex; } }
-/* six service tabs on laptop widths: smaller type so long names fit */
-@media (min-width: 861px) and (max-width: 1240px) { .tab { min-width: 0; font-size: 14px; padding: 14px 12px 16px; } }
 </style>
 
 </head>
@@ -821,7 +819,7 @@ const SERVICES = [
       ["рендер и композ", "Рендер, сборка с отснятым материалом, цвет и звук.", ""],
       ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
-  { name: "видеопродакшн", cover: "rec", bg: "var(--t-green)", fg: "#ffffff",
+  { name: "видео\u00adпродакшн", cover: "rec", bg: "var(--t-green)", fg: "#ffffff",
     en: {"name": "video production", "desc": "Commercials, music videos, brand films. The full cycle from script to post.", "list": ["Script, casting, shoot, post.", "Shoots in different cities."], "steps": [["brief", "Task, platforms, runtime and deadlines."], ["script", "We write the script and the director’s treatment."], ["pre-production", "Casting, locations, crew, shooting schedule."], ["shoot", "We shoot to the approved plan."], ["edit, colour, sound", "We assemble the video and show rough and final cuts."], ["final", "The finished video in every format for the platforms you need."]]},
     desc: "Реклама, клипы, имиджевые фильмы. Полный цикл от сценария до поста.",
     list: ["Сценарий, кастинг, съёмка, пост.", "Съёмки в разных городах."],
