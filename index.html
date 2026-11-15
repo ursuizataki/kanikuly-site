@@ -70,18 +70,7 @@ nav.links .lang { font-family: var(--mono); font-size: 13px; text-transform: upp
 /* showreel */
 .reel { position: relative; background: var(--reel-bg); color: var(--reel-fg); overflow: hidden; }
 .reel-frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; max-height: 78vh; min-height: 300px; }
-.reel video { opacity: 0; transition: opacity .6s; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-.reel .stand { position: absolute; inset: 0; }
-.slide { position: absolute; inset: 0; display: flex; align-items: flex-end; justify-content: flex-end; padding: clamp(16px, 4vw, 48px); opacity: 0; animation: reel 18s infinite; }
-.slide b { font-family: var(--display); font-weight: 800; font-size: clamp(90px, 22vw, 320px); line-height: .8; letter-spacing: -0.05em; }
-.slide:nth-child(1){ background: var(--t-yellow); color: #141414; animation-delay: 0s; }
-.slide:nth-child(2){ background: #2457ff; color: #fff; animation-delay: 3s; }
-.slide:nth-child(3){ background: #e3191c; color: #fff; animation-delay: 6s; }
-.slide:nth-child(4){ background: #141414; color: #fff; animation-delay: 9s; }
-.slide:nth-child(5){ background: #0f9d63; color: #fff; animation-delay: 12s; }
-.slide:nth-child(6){ background: #ececee; color: #141414; animation-delay: 15s; }
-@keyframes reel { 0% { opacity: 0; transform: scale(1.04); } 2% { opacity: 1; } 16.6% { opacity: 1; transform: scale(1); } 18.6% { opacity: 0; } 100% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { .slide { animation: none; } .slide:nth-child(1) { opacity: 1; } }
+.reel video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
 .reel-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.0) 35%, rgba(0,0,0,.55) 100%); pointer-events: none; }
 .reel-over { position: absolute; left: 0; right: 0; bottom: 0; }
 .reel-over .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-block: clamp(16px, 3vw, 32px); }
@@ -328,7 +317,6 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 @media (max-width: 600px) {
   section { padding-block: 56px; }
   .intro { padding-block: 36px 40px; }
-  .slide b { font-size: 30vw; }
   .reel-frame { min-height: 0; }
 
   /* numbers: one per row, never split "1,4 млрд" */
@@ -476,19 +464,10 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
   </div>
 </header>
 
-<!-- ПЕРВЫЙ ЭКРАН. Сейчас трейлер Yeti; шоурил из всех кейсов лежит в media/showreel.mp4 и showreel-720.mp4; для шоурила верните media/showreel.mp4 (H.264, до 15 МБ, лучше 1080p, 60–90 сек).
-     Пока файла нет, играет анимированная заставка из обложек кейсов. -->
+<!-- ПЕРВЫЙ ЭКРАН. Сейчас трейлер Yeti (1080p на компьютере, 720p на телефоне), до запуска виден кадр trailer.jpg. Шоурил из всех кейсов лежит в media/showreel.mp4 и showreel-720.mp4. -->
 <section class="reel" id="reel" style="padding-block:0">
   <div class="reel-frame">
-    <div class="stand" id="stand" aria-hidden="true">
-      <div class="slide"><b>лето</b></div>
-      <div class="slide"><b>48ч</b></div>
-      <div class="slide"><b>×3</b></div>
-      <div class="slide"><b>0→2м</b></div>
-      <div class="slide"><b>км</b></div>
-      <div class="slide"><b>1д</b></div>
-    </div>
-    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/trailer.jpg" aria-label="Трейлер сериала YETI: DYOR" data-en-label="YETI: DYOR series trailer">
+    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/hero.jpg" aria-label="Трейлер сериала YETI: DYOR" data-en-label="YETI: DYOR series trailer">
       <source src="media/yeti/trailer-hq.mp4" type="video/mp4" media="(min-width: 900px)">
       <source src="media/yeti/trailer-hero.mp4" type="video/mp4">
     </video>
@@ -497,6 +476,7 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <div class="wrap">
         <span class="reel-tag" data-en="<i></i>trailer · YETI: DYOR"><i></i>трейлер · YETI: DYOR</span>
         <div class="reel-btns">
+          <button class="btn btn-light" id="playBtn" type="button" hidden data-en="play trailer">смотреть трейлер</button>
           <button class="btn btn-light" id="soundBtn" type="button" hidden data-en="sound on">со звуком</button>
         </div>
       </div>
@@ -882,13 +862,15 @@ tabs.forEach((t, i) => {
 });
 showService(0);
 
-/* Шоурил: если файл есть и играет, прячем заставку и показываем кнопку звука */
+/* Трейлер на первом экране. Если браузер не запустил его сам (например, режим энергосбережения на iPhone), показываем кадр и кнопку запуска */
 const v = document.getElementById("reelVideo");
-const stand = document.getElementById("stand");
 const sound = document.getElementById("soundBtn");
-v.addEventListener("playing", () => { v.style.opacity = 1; stand.hidden = true; sound.hidden = false; });
+const playBtn = document.getElementById("playBtn");
+v.addEventListener("playing", () => { playBtn.hidden = true; sound.hidden = false; });
 const p = v.play && v.play();
-if (p && p.catch) p.catch(() => {});
+if (p && p.catch) p.catch(() => { if (v.paused) playBtn.hidden = false; });
+setTimeout(() => { if (v.paused) playBtn.hidden = false; }, 2500);
+playBtn.addEventListener("click", () => { v.play().catch(() => {}); });
 sound.addEventListener("click", () => {
   v.muted = !v.muted;
   if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
