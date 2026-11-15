@@ -63,6 +63,7 @@ header.top .wrap { display: flex; align-items: center; justify-content: space-be
 nav.links { display: flex; gap: clamp(12px, 2.4vw, 28px); font-size: 15px; }
 nav.links a { text-decoration: none; color: var(--muted); }
 nav.links a:hover { color: var(--ink); }
+nav.links .lang { font-family: var(--mono); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; color: var(--ink); border: 1px solid var(--line, currentColor); border-radius: 999px; padding: 3px 10px; margin-top: -4px; }
 @media (max-width: 720px) { nav.links .opt { display: none; } }
 @media (max-width: 420px) { .brand span { display: none; } }
 
@@ -433,19 +434,29 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 </head>
 <body>
 <div id="splash" aria-hidden="true"><div class="bg"></div><span id="splashWord"></span></div>
-<script>if (!matchMedia("(prefers-reduced-motion: reduce)").matches) document.documentElement.classList.add("splash-on");</script>
-<a class="fab" id="fab" href="#contact">связаться</a>
+<script>
+/* Язык: ?lang=en в адресе или выбор, запомненный в браузере. При переключении заставку не показываем. */
+(() => {
+  const root = document.documentElement;
+  let lang = new URLSearchParams(location.search).get("lang"), skip = false;
+  try { if (lang) localStorage.setItem("lang", lang); else lang = localStorage.getItem("lang"); skip = !!sessionStorage.getItem("nosplash"); sessionStorage.removeItem("nosplash"); } catch {}
+  root.lang = lang === "en" ? "en" : "ru";
+  if (!skip && !matchMedia("(prefers-reduced-motion: reduce)").matches) root.classList.add("splash-on");
+})();
+</script>
+<a class="fab" id="fab" href="#contact" data-en="contact">связаться</a>
 
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#reel" aria-label="Каникулы, в начало">
+    <a class="brand" href="#reel" aria-label="Каникулы, в начало" data-en-label="Kanikuly, back to top">
       <i class="logo" aria-hidden="true"></i>
-      <span>каникулы</span>
+      <span data-en="kanikuly">каникулы</span>
     </a>
-    <nav class="links" aria-label="Разделы">
-      <a href="#work">работы</a>
-      <a class="opt" href="#services">что делаем</a>
-      <a href="#contact">связь</a>
+    <nav class="links" aria-label="Разделы" data-en-label="Sections">
+      <a href="#work" data-en="work">работы</a>
+      <a class="opt" href="#services" data-en="what we do">что делаем</a>
+      <a href="#contact" data-en="contact">связь</a>
+      <a class="lang" id="langBtn" href="?lang=en" hreflang="en" aria-label="English version" data-en="ru" data-en-label="Русская версия">en</a>
     </nav>
   </div>
 </header>
@@ -462,16 +473,16 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
       <div class="slide"><b>км</b></div>
       <div class="slide"><b>1д</b></div>
     </div>
-    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/trailer.jpg" aria-label="Трейлер сериала YETI: DYOR">
+    <video id="reelVideo" autoplay muted loop playsinline preload="auto" poster="media/yeti/trailer.jpg" aria-label="Трейлер сериала YETI: DYOR" data-en-label="YETI: DYOR series trailer">
       <source src="media/yeti/trailer-hq.mp4" type="video/mp4" media="(min-width: 900px)">
       <source src="media/yeti/trailer-hero.mp4" type="video/mp4">
     </video>
     <div class="reel-shade"></div>
     <div class="reel-over">
       <div class="wrap">
-        <span class="reel-tag"><i></i>трейлер · YETI: DYOR</span>
+        <span class="reel-tag" data-en="<i></i>trailer · YETI: DYOR"><i></i>трейлер · YETI: DYOR</span>
         <div class="reel-btns">
-          <button class="btn btn-light" id="soundBtn" type="button" hidden>со звуком</button>
+          <button class="btn btn-light" id="soundBtn" type="button" hidden data-en="sound on">со звуком</button>
         </div>
       </div>
     </div>
@@ -480,12 +491,12 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 
 <section class="intro">
   <div class="wrap intro-grid">
-    <h1><em>миллионы</em> смотрят до конца</h1>
+    <h1 data-en="<em>millions</em> watch to the end"><em>миллионы</em> смотрят до конца</h1>
     <div class="lead">
       <div class="reel-btns">
-        <a class="btn btn-ghost" href="#work">смотреть работы</a>
-        <a class="btn btn-ghost" href="#services">как работаем</a>
-        <a class="btn btn-red mob-only" href="#contact">связаться</a>
+        <a class="btn btn-ghost" href="#work" data-en="see our work">смотреть работы</a>
+        <a class="btn btn-ghost" href="#services" data-en="how we work">как работаем</a>
+        <a class="btn btn-red mob-only" href="#contact" data-en="contact">связаться</a>
       </div>
     </div>
   </div>
@@ -493,21 +504,21 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 
 <section class="band" id="numbers" aria-labelledby="numbersTitle">
   <div class="wrap">
-    <p class="mono" id="numbersTitle">каникулы в цифрах</p>
+    <p class="mono" id="numbersTitle" data-en="kanikuly in numbers">каникулы в цифрах</p>
     <div class="nums">
-      <div><b>15 млрд+</b><span>просмотров у всех наших видео</span></div>
-      <div><b>100+</b><span>выполненных кейсов</span></div>
-      <div><b>20+</b><span>человек в команде</span></div>
+      <div><b data-en="15B+">15 млрд+</b><span data-en="views across all our videos">просмотров у всех наших видео</span></div>
+      <div><b>100+</b><span data-en="projects delivered">выполненных кейсов</span></div>
+      <div><b>20+</b><span data-en="people on the team">человек в команде</span></div>
     </div>
-    <p class="band-note">Цифры по каждому проекту и ссылки на ролики в разделе <a href="#work">работы</a>.</p>
+    <p class="band-note" data-en="Numbers for every project and links to the videos are in the &lt;a href=&quot;#work&quot;&gt;work&lt;/a&gt; section.">Цифры по каждому проекту и ссылки на ролики в разделе <a href="#work">работы</a>.</p>
   </div>
 </section>
 
 <section id="work">
   <div class="wrap">
     <div class="sec-head">
-      <h2>работы</h2>
-      <span class="mono hint" id="accHint">наведите на кейс, чтобы раскрыть</span>
+      <h2 data-en="work">работы</h2>
+      <span class="mono hint" id="accHint" data-en="hover a case to open it">наведите на кейс, чтобы раскрыть</span>
     </div>
     <div class="acc" id="cases"></div>
   </div>
@@ -516,10 +527,10 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 <section id="services" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <h2>что делаем</h2>
-      <span class="mono hint">выберите направление</span>
+      <h2 data-en="what we do">что делаем</h2>
+      <span class="mono hint" data-en="pick a direction">выберите направление</span>
     </div>
-    <div class="tabs" role="tablist" aria-label="Направления" id="svcTabs"></div>
+    <div class="tabs" role="tablist" aria-label="Направления" data-en-label="Directions" id="svcTabs"></div>
     <div class="tabpanel" role="tabpanel" id="svcPanel" tabindex="-1"></div>
   </div>
 </section>
@@ -527,30 +538,30 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 <section id="clients" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head">
-      <h2>нас выбрали</h2>
-      <span class="mono">бренды, лейблы, платформы</span>
+      <h2 data-en="they chose us">нас выбрали</h2>
+      <span class="mono" data-en="brands, labels, platforms">бренды, лейблы, платформы</span>
     </div>
     <div class="clients">
-      <div class="cl"><span>Polymarket</span></div><div class="cl"><span>LBank</span></div><div class="cl"><span>Океаномания</span></div><div class="cl"><span>Л'Этуаль</span></div><div class="cl"><span>Ганвест</span></div>
+      <div class="cl"><span>Polymarket</span></div><div class="cl"><span>LBank</span></div><div class="cl"><span data-en="Okeanomania">Океаномания</span></div><div class="cl"><span data-en="L’Etoile">Л'Этуаль</span></div><div class="cl"><span data-en="Ganvest">Ганвест</span></div>
     </div>
   </div>
 </section>
 
 <section class="contact" id="contact" style="padding-top:0">
   <div class="wrap">
-    <h2>оставьте задачу и на море.</h2>
-    <p class="sub">Напишите в двух словах, что нужно. Ответим в течение рабочего дня и предложим время для созвона.</p>
+    <h2 data-en="drop us a brief and head to the beach.">оставьте задачу и на море.</h2>
+    <p class="sub" data-en="Tell us in a couple of words what you need. We’ll reply within a business day and suggest a time for a call.">Напишите в двух словах, что нужно. Ответим в течение рабочего дня и предложим время для созвона.</p>
     <div class="rows">
-      <div class="row"><span class="mono">почта</span><span class="v" id="mail">ypa@kanukylu.com</span><button type="button" id="copyBtn">копировать</button></div>
-      <div class="row"><span class="mono">где</span><span class="v">работаем везде</span><span></span></div>
+      <div class="row"><span class="mono" data-en="email">почта</span><span class="v" id="mail">ypa@kanukylu.com</span><button type="button" id="copyBtn" data-en="copy">копировать</button></div>
+      <div class="row"><span class="mono" data-en="where">где</span><span class="v" data-en="we work anywhere">работаем везде</span><span></span></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <span class="mono">© 2026 каникулы</span>
-    <span class="mono">лето здесь круглый год</span>
+    <span class="mono" data-en="© 2026 kanikuly">© 2026 каникулы</span>
+    <span class="mono" data-en="summer all year round">лето здесь круглый год</span>
   </div>
 </footer>
 
@@ -561,6 +572,11 @@ const CASES = [
   /* Флагманы. Пустые поля на сайте не показываются: дописывайте по мере появления данных. */
   { chip: "флагман", cover: "yeti", bg: "var(--t-green)", fg: "#ffffff", client: "собственный проект студии", format: "2D-анимация",
     title: "Yeti",
+    en: { chip: "flagship", client: "the studio’s own project", format: "2D animation",
+      task: "Grow our own character that people watch for his own sake, while brands come for integrations.",
+      did: "We created a green Yeti trader and release a series of vertical 2D shorts about a trader’s life: charts, sleepless nights, highs and crashes.",
+      res: "10B+", resNote: "views. Paid integrations and brand collaborations: Polymarket, LBank.",
+      trailer: { title: "the series “YETI: DYOR”", note: "The next step for the universe: a long-form story about Yeti, scams, the police and prison." } },
     task: "Вырастить своего героя, которого смотрят ради него самого, а бренды приходят за интеграциями.",
     did: "Придумали зелёного Йети-трейдера и выпускаем серию вертикальных 2D-роликов про жизнь трейдера: графики, ночи без сна, взлёты и падения.",
     res: "10 млрд+", resNote: "просмотров. Платные интеграции и коллаборации с брендами: Polymarket, LBank.", video: "media/yeti/loop.mp4", image: "", link: "",
@@ -568,6 +584,10 @@ const CASES = [
     reels: [2, 10, 11, 7, 3, 1, 4, 5, 6, 8, 9, 12].map(k => ({ src: `media/yeti/yeti${k}.mp4`, poster: `media/yeti/yeti${k}.jpg` })) },
   { chip: "флагман", cover: "океан", bg: "var(--t-blue)", fg: "#ffffff", client: "", format: "вирусный ии-сериал",
     title: "Океаномания",
+    en: { chip: "flagship", title: "Okeanomania", format: "viral AI series",
+      task: "Make fish and seafood a topic people forward to their friends.",
+      did: "We generated a series of “found archive news reports” from the 90s: a cutlet made from 50 tonnes of pollock, crab sticks traded for 100 Toyotas and other stories you want to believe.",
+      res: "20M+", resNote: "views of ad content. Series reach over 3M, +25,000 followers." },
     task: "Сделать рыбу и морепродукты темой, которую пересылают друзьям.",
     did: "Сгенерировали сериал из «найденных архивных репортажей» 90-х: котлета из 50 тонн минтая, крабовые палочки в обмен на 100 «Тойот» и другие истории, в которые хочется поверить.",
     res: "20+ млн", resNote: "просмотров рекламного контента. Охват серии больше 3 млн, +25 000 подписчиков.",
@@ -575,12 +595,38 @@ const CASES = [
     reels: [7, 1, 2, 3, 4, 5, 6].map(k => ({ src: `media/okean/okean${k}.mp4`, poster: `media/okean/okean${k}.jpg` })) },
   { chip: "ии-реклама", cover: "3в1", bg: "#e3191c", fg: "#ffffff", client: "Океаномания", format: "ии-видео",
     title: "3 истории в 1 видео",
+    en: { chip: "AI ad", client: "Okeanomania", format: "AI video", title: "3 stories in 1 video",
+      task: "Weave the product into a story so the ad gets watched to the end.",
+      did: "A series of videos, each with three short legends about how famous dishes came to be. An Okeanomania product becomes the hero of one of the stories.",
+      res: "15M+", resNote: "views" },
     task: "Встроить продукт в историю так, чтобы рекламу досмотрели до конца.",
     did: "Серия роликов, где в каждом три короткие легенды о том, как появились знаменитые блюда. Продукт «Океаномании» становится героем одной из историй.",
     res: "15+ млн", resNote: "просмотров", video: "media/okean/three-loop.mp4", image: "", link: "",
     reels: ["three", "three2", "three3", "three4"].map(n => ({ src: `media/okean/${n}.mp4`, poster: `media/okean/${n}.jpg` })) },
+  { chip: "tv-реклама", cover: "winx", bg: "var(--t-yellow)", fg: "#141414", client: "SODA Makeup", format: "TV-реклама · продакшн и VFX",
+    title: "Winx Club × SODA",
+    en: { chip: "TV ad", format: "TV commercial · production and VFX",
+      task: "Launch the SODA Makeup × Winx Club collaboration on TV: a new cosmetics collection in the style of the cartoon.",
+      did: "We made a TV spot where the heroines turn into Winx fairies: pink clouds, northern lights, fire and magic, with the collection’s palettes and lipsticks becoming part of the spell." },
+    task: "Запустить на ТВ коллаборацию SODA Makeup и Winx Club: новую коллекцию косметики в стиле мультсериала.",
+    did: "Сделали TV-ролик, где героини превращаются в фей Winx: розовые облака, северное сияние, огонь и магия, а палетки и помады коллекции становятся частью волшебства.",
+    res: "", resNote: "", video: "media/winx/loop.mp4", image: "", link: "",
+    reels: [{ src: "media/winx/winx.mp4", poster: "media/winx/winx.jpg", wide: true }] },
+  { chip: "tv-реклама", cover: "kitty", bg: "var(--t-grey)", fg: "var(--ink)", client: "SODA Makeup", format: "TV-реклама · видеопродакшн",
+    title: "Hello Kitty × SODA",
+    en: { chip: "TV ad", format: "TV commercial · video production",
+      task: "Present the SODA Makeup × Hello Kitty collection as a party with friends, not a shop window.",
+      did: "We shot a TV spot about a pyjama party in a pink room: popcorn, selfies, dancing and makeup, with the collection passed from hand to hand." },
+    task: "Представить коллекцию SODA Makeup с Hello Kitty так, чтобы она выглядела как вечеринка с подругами, а не как витрина.",
+    did: "Сняли TV-ролик о пижамной вечеринке в розовой комнате: попкорн, селфи, танцы и макияж, в котором продукты коллекции переходят из рук в руки.",
+    res: "", resNote: "", video: "media/kitty/loop.mp4", image: "", link: "",
+    reels: [{ src: "media/kitty/kitty.mp4", poster: "media/kitty/kitty.jpg", wide: true }] },
   { chip: "науч-поп", cover: "наука", bg: "var(--t-black)", fg: "#ffffff", client: "Океаномания", format: "ии-видео · серия",
     title: "Науч-поп серия",
+    en: { chip: "pop science", client: "Okeanomania", format: "AI video · series", title: "Pop-science series",
+      task: "Tell the brand’s story through videos that are worth watching even without the ad.",
+      did: "Short pop-science videos about food in history: what Empress Cixi ate, what Elizabeth I was served and where crab sticks came from.",
+      res: "25M+", resNote: "views" },
     task: "Рассказать о продуктах бренда через истории, которые интересно смотреть и без рекламы.",
     did: "Короткие научно-популярные ролики о еде в истории: что ела императрица Цыси, чем угощали Елизавету I и откуда взялись крабовые палочки.",
     res: "25+ млн", resNote: "просмотров", video: "media/okean/sci-loop.mp4", image: "", link: "",
@@ -588,6 +634,18 @@ const CASES = [
 ];
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+/* Английская версия: тексты разметки лежат в data-en / data-en-label, тексты кейсов и услуг в полях en */
+const EN = document.documentElement.lang === "en";
+const tr = (ru, en) => EN ? en : ru;
+if (EN) {
+  document.title = "Kanikuly";
+  document.querySelectorAll("[data-en]").forEach(el => el.innerHTML = el.dataset.en);
+  document.querySelectorAll("[data-en-label]").forEach(el => el.setAttribute("aria-label", el.dataset.enLabel));
+  const lb = document.getElementById("langBtn");
+  lb.href = "?lang=ru"; lb.hreflang = "ru";
+  CASES.forEach(c => { const t = c.en.trailer; Object.assign(c, c.en); if (t) c.trailer = { ...c.trailer, ...t }; });
+}
+document.getElementById("langBtn").addEventListener("click", () => { try { sessionStorage.setItem("nosplash", "1"); } catch {} });
 const acc = document.getElementById("cases");
 acc.innerHTML = CASES.map((c, i) => {
   const media = c.video
@@ -595,9 +653,9 @@ acc.innerHTML = CASES.map((c, i) => {
     : c.image ? `<img src="${esc(c.image)}" alt="">` : "";
   const fg = media ? "#ffffff" : c.fg;
   const meta = [c.client, c.format].filter(Boolean).join(" · ");
-  const rows = [["задача", c.task], ["сделали", c.did]].filter(r => r[1])
+  const rows = [[tr("задача", "task"), c.task], [tr("сделали", "what we did"), c.did]].filter(r => r[1])
     .map(([k, t]) => `<div><span class="k">${k}</span><span>${esc(t)}</span></div>`).join("");
-  const link = c.link ?`<a href="${esc(c.link)}" target="_blank" rel="noopener">смотреть ролик →</a>` : "";
+  const link = c.link ?`<a href="${esc(c.link)}" target="_blank" rel="noopener">${tr("смотреть ролик →", "watch →")}</a>` : "";
   return `<article class="panel${i === 0 ? " is-open" : ""}${media ? " has-media" : ""}" tabindex="0" aria-expanded="${i === 0}" style="background:${c.bg};color:${fg}">
     ${media}
     <span class="chip">${esc(c.chip)}</span>
@@ -609,8 +667,8 @@ acc.innerHTML = CASES.map((c, i) => {
       ${c.res || c.resNote ? `<div class="res"><b>${esc(c.res)}</b><span>${esc(c.resNote)}</span></div>` : ""}
       ${c.trailer ? `<div class="trl"><span class="k">${esc(c.trailer.title)}</span><span>${esc(c.trailer.note)}</span></div>` : ""}
       ${c.reels || c.trailer ? `<div class="btns">
-        ${c.trailer ? `<button class="reels-btn" type="button" data-case="${i}" data-kind="trailer">трейлер сериала</button>` : ""}
-        ${c.reels ? `<button class="reels-btn alt" type="button" data-case="${i}" data-kind="reels">${c.reels.length === 1 ? "смотреть ролик" : `ролики · ${c.reels.length}`}</button>` : ""}
+        ${c.trailer ? `<button class="reels-btn" type="button" data-case="${i}" data-kind="trailer">${tr("трейлер сериала", "series trailer")}</button>` : ""}
+        ${c.reels ? `<button class="reels-btn alt" type="button" data-case="${i}" data-kind="reels">${c.reels.length === 1 ? tr("смотреть ролик", "watch the video") : `${tr("ролики", "videos")} · ${c.reels.length}`}</button>` : ""}
       </div>` : ""}
       ${link}
     </div>
@@ -645,8 +703,8 @@ setupAcc(acc);
     box = document.createElement("div");
     box.className = "rv"; box.hidden = true;
     box.setAttribute("role", "dialog"); box.setAttribute("aria-modal", "true");
-    box.innerHTML = `<div class="rv-top"><div><b></b><span></span></div><button class="rv-btn" type="button" data-x aria-label="Закрыть">✕</button></div>
-      <div class="rv-stage"><button class="rv-btn" type="button" data-p aria-label="Предыдущий ролик">←</button><video controls playsinline preload="metadata"></video><button class="rv-btn" type="button" data-n aria-label="Следующий ролик">→</button></div>
+    box.innerHTML = `<div class="rv-top"><div><b></b><span></span></div><button class="rv-btn" type="button" data-x aria-label="${tr("Закрыть", "Close")}">✕</button></div>
+      <div class="rv-stage"><button class="rv-btn" type="button" data-p aria-label="${tr("Предыдущий ролик", "Previous video")}">←</button><video controls playsinline preload="metadata"></video><button class="rv-btn" type="button" data-n aria-label="${tr("Следующий ролик", "Next video")}">→</button></div>
       <div class="rv-thumbs"></div>`;
     document.body.appendChild(box);
     vid = box.querySelector("video"); thumbs = box.querySelector(".rv-thumbs"); count = box.querySelector(".rv-top span");
@@ -676,7 +734,7 @@ setupAcc(acc);
     back = document.activeElement; list = items;
     box.classList.toggle("single", list.length === 1);
     box.querySelector(".rv-top b").textContent = title;
-    thumbs.innerHTML = list.map((r, k) => `<button type="button" aria-label="Ролик ${k + 1}"><img src="${esc(r.poster)}" alt="" loading="lazy"></button>`).join("");
+    thumbs.innerHTML = list.map((r, k) => `<button type="button" aria-label="${tr("Ролик", "Video")} ${k + 1}"><img src="${esc(r.poster)}" alt="" loading="lazy"></button>`).join("");
     [...thumbs.children].forEach((t, k) => t.onclick = () => show(k));
     box.hidden = false; document.body.style.overflow = "hidden";
     show(0); box.querySelector("[data-x]").focus();
@@ -691,15 +749,16 @@ setupAcc(acc);
     if (!b) return;
     e.stopPropagation();
     const c = CASES[+b.dataset.case];
-    if (b.dataset.kind === "trailer") open(`${c.title} · трейлер`, [{ ...c.trailer, wide: true }]);
+    if (b.dataset.kind === "trailer") open(`${c.title} · ${tr("трейлер", "trailer")}`, [{ ...c.trailer, wide: true }]);
     else open(c.title, c.reels);
   });
 })();
-if (!canHover || matchMedia("(max-width: 860px)").matches) document.getElementById("accHint").textContent = "листайте кейсы вбок →";
+if (!canHover || matchMedia("(max-width: 860px)").matches) document.getElementById("accHint").textContent = tr("листайте кейсы вбок →", "swipe cases sideways →");
 
 /* Направления и их пайплайны. you: true — этап, который утверждает клиент. */
 const SERVICES = [
   { name: "ии-видео", cover: "ии", bg: "var(--t-blue)", fg: "#ffffff",
+    en: {"name": "ai video", "desc": "Generative videos under a director’s control.", "list": ["Ads, music videos, brand films, social series and viral formats.", "The neural network follows a storyboard, not guesswork.", "Hybrid: live action, hand-drawn animation and generation in one frame."], "steps": [["brief", "A call or a couple of messages. We pin down the task, platforms, runtime and deadlines. From there, we ask the questions."], ["storyboard and style", "We draw the storyboard and lock the visual style. Production then follows exactly what was approved."], ["pilot or animatic", "The first cut in motion: rhythm, light, character. The cheapest place for big changes."], ["production", "Generating frames and video, editing, sound. We share work in progress in a common chat."], ["final", "The finished video in every format for the platforms you need."]]},
     desc: "Генеративные ролики под режиссёрским контролем.",
     list: ["Реклама, клипы, имиджевые ролики, серии для соцсетей и вирусные форматы.", "Нейросеть работает по раскадровке, а не наугад.", "Гибрид: живая съёмка, рисованная анимация и генерация в одном кадре."],
     steps: [
@@ -710,6 +769,7 @@ const SERVICES = [
       ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "традиционная анимация", cover: "2d", bg: "#e3191c", fg: "#ffffff",
+    en: {"name": "traditional animation", "desc": "Frame-by-frame 2D, cut-out, stop-motion. For when you need a warm hand-drawn line.", "list": ["Series and short videos for brands.", "Characters and a world built around your product."], "steps": [["brief", "Task, platforms, runtime and deadlines."], ["script and storyboard", "We write the story and break it down shot by shot."], ["character and background design", "We draw the characters, backgrounds and colour palette."], ["animatic", "The storyboard in motion with sound. This is where we check rhythm and timing."], ["animation and compositing", "Animation, colouring, compositing, sound and music."], ["final", "The finished video in every format for the platforms you need."]]},
     desc: "Покадровая 2D, перекладка, стоп-моушен. Когда нужна тёплая ручная линия.",
     list: ["Сериалы и короткие ролики для брендов.", "Персонажи и мир под ваш продукт."],
     steps: [
@@ -721,6 +781,7 @@ const SERVICES = [
       ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "гибрид медиа", cover: "×3", bg: "var(--t-yellow)", fg: "#141414",
+    en: {"name": "hybrid media", "desc": "Live action, animation and neural networks in one frame, built up in layers.", "list": ["Music videos and commercials.", "Every scene is built from several layers."], "steps": [["brief", "Task, platforms, runtime and deadlines."], ["storyboard and style", "We break each scene into layers: what we shoot, what we draw, what we generate."], ["shoot", "We film the live layer: talent, location and lighting set up for the graphics to come."], ["animation and generation", "We draw and generate layers on top of the footage."], ["assembly and sound", "Compositing, colour, editing and sound."], ["final", "The finished video in every format for the platforms you need."]]},
     desc: "Живые съёмки, анимация и нейросети в одном кадре, собранные по слоям.",
     list: ["Клипы и рекламные ролики.", "Каждая сцена собирается из нескольких слоёв."],
     steps: [
@@ -732,6 +793,7 @@ const SERVICES = [
       ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "3d и vfx", cover: "3d", bg: "var(--t-grey)", fg: "var(--ink)",
+    en: {"name": "3d and vfx", "desc": "3D graphics and visual effects: from characters and products to complex scenes over live footage.", "list": ["3D modelling and animation of characters and products.", "VFX and compositing: graphics, explosions, background replacement, cleanup.", "CGI videos for ads and social media."], "steps": [["brief", "Task, platforms, runtime and deadlines."], ["concept and previs", "We draw the concept and build a rough 3D storyboard: camera, rhythm, composition."], ["models and look", "Models, textures, lighting and materials. We lock how the image will look."], ["animation and simulations", "Animation, particles, fluids, cloth. We share work in progress."], ["render and compositing", "Rendering, integration with the footage, colour and sound."], ["final", "The finished video in every format for the platforms you need."]]},
     desc: "3D-графика и визуальные эффекты: от персонажей и продуктов до сложных сцен поверх живого видео.",
     list: ["3D-моделирование и анимация персонажей и продуктов.", "VFX и композитинг: графика, взрывы, замена фона, клинап.", "CGI-ролики для рекламы и соцсетей."],
     steps: [
@@ -743,6 +805,7 @@ const SERVICES = [
       ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "видеопродакшн", cover: "rec", bg: "var(--t-green)", fg: "#ffffff",
+    en: {"name": "video production", "desc": "Commercials, music videos, brand films. The full cycle from script to post.", "list": ["Script, casting, shoot, post.", "Shoots in different cities."], "steps": [["brief", "Task, platforms, runtime and deadlines."], ["script", "We write the script and the director’s treatment."], ["pre-production", "Casting, locations, crew, shooting schedule."], ["shoot", "We shoot to the approved plan."], ["edit, colour, sound", "We assemble the video and show rough and final cuts."], ["final", "The finished video in every format for the platforms you need."]]},
     desc: "Реклама, клипы, имиджевые фильмы. Полный цикл от сценария до поста.",
     list: ["Сценарий, кастинг, съёмка, пост.", "Съёмки в разных городах."],
     steps: [
@@ -754,6 +817,7 @@ const SERVICES = [
       ["финал", "Готовый ролик во всех форматах под нужные площадки.", "принимаете вы", true]
     ] },
   { name: "ведение медиа", cover: "0→2м", bg: "var(--t-black)", fg: "#ffffff",
+    en: {"name": "media management", "desc": "Brand channels and accounts: recurring formats, regular releases, growth in numbers.", "list": ["Launching an account from scratch or relaunching it.", "Regular video releases."], "steps": [["brief", "Goals, audience, platforms."], ["strategy and formats", "We come up with the channel’s recurring formats and style."], ["content plan", "A release plan a month ahead."], ["regular releases", "We shoot, draw, generate and publish on schedule."], ["report and growth", "We look at the numbers and change what doesn’t work."]]},
     desc: "Каналы и аккаунты брендов: рубрики, регулярный выпуск, рост в цифрах.",
     list: ["Запуск аккаунта с нуля или перезапуск.", "Регулярный выпуск роликов."],
     steps: [
@@ -764,9 +828,15 @@ const SERVICES = [
       ["отчёт и рост", "Смотрим цифры и меняем то, что не работает.", "отчёт раз в месяц"]
     ] }
 ];
+const OK_EN = { "от вас: задача": "from you: the brief", "утверждаете вы": "you approve", "принимаете вы": "you sign off", "отчёт раз в неделю": "weekly report", "отчёт раз в месяц": "monthly report" };
+if (EN) SERVICES.forEach(v => {
+  const e = v.en;
+  v.steps = v.steps.map(([, , ok, you], k) => [e.steps[k][0], e.steps[k][1], OK_EN[ok] ?? ok, you]);
+  Object.assign(v, { name: e.name, desc: e.desc, list: e.list });
+});
 const svcTabs = document.getElementById("svcTabs");
 const svcPanel = document.getElementById("svcPanel");
-svcTabs.innerHTML = SERVICES.map((v, i) => `<button class="tab" role="tab" type="button" id="tab-${i}" aria-controls="svcPanel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" style="--c:${v.bg};--fgc:${v.fg}"><span class="top"><span class="dot"></span><span class="cnt">${v.steps.length} этапов</span></span><span class="nm">${esc(v.name)}</span></button>`).join("");
+svcTabs.innerHTML = SERVICES.map((v, i) => `<button class="tab" role="tab" type="button" id="tab-${i}" aria-controls="svcPanel" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" style="--c:${v.bg};--fgc:${v.fg}"><span class="top"><span class="dot"></span><span class="cnt">${v.steps.length} ${tr("этапов", "stages")}</span></span><span class="nm">${esc(v.name)}</span></button>`).join("");
 const tabs = [...svcTabs.children];
 function showService(i) {
   const v = SERVICES[i];
@@ -782,7 +852,7 @@ function showService(i) {
       <span class="tp-cover" aria-hidden="true">${esc(v.cover)}</span>
     </div>
     <div>
-      <div class="tp-label"><span>как работаем</span><span>${v.steps.length} этапов · ${approvals} точки согласования</span></div>
+      <div class="tp-label"><span>${tr("как работаем", "how we work")}</span><span>${v.steps.length} ${tr("этапов", "stages")} · ${approvals} ${tr("точки согласования", "approval points")}</span></div>
       <div class="flow" style="--n:${v.steps.length}">${v.steps.map(([t, d, ok, you], k) => `<div class="st"><span class="n">${String(k + 1).padStart(2, "0")}</span><h4>${esc(t)}</h4><p>${esc(d)}</p>${ok ? `<span class="ok${you ? " you" : ""}">${esc(ok)}</span>` : ""}</div>`).join("")}</div>
     </div>
   </div>`;
@@ -808,15 +878,15 @@ if (p && p.catch) p.catch(() => {});
 sound.addEventListener("click", () => {
   v.muted = !v.muted;
   if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
-  sound.textContent = v.muted ? "со звуком" : "без звука";
+  sound.textContent = v.muted ? tr("со звуком", "sound on") : tr("без звука", "sound off");
 });
 
 /* Копирование почты */
 document.getElementById("copyBtn").addEventListener("click", async e => {
   const btn = e.currentTarget, text = document.getElementById("mail").textContent;
-  try { await navigator.clipboard.writeText(text); btn.textContent = "скопировано"; }
-  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "выделено"; }
-  setTimeout(() => btn.textContent = "копировать", 1800);
+  try { await navigator.clipboard.writeText(text); btn.textContent = tr("скопировано", "copied"); }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById("mail")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = tr("выделено", "selected"); }
+  setTimeout(() => btn.textContent = tr("копировать", "copy"), 1800);
 });
 /* Заставка: «каникулы» раскрывается из буквы «к» слева направо и улетает в шапку */
 (async () => {
@@ -827,12 +897,11 @@ document.getElementById("copyBtn").addEventListener("click", async e => {
   const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   let finished = false;
   const done = () => { if (finished) return; finished = true; root.classList.remove("splash-on"); splash.remove(); };
-  if (reduce || !word.animate) { done(); return; }
-  root.classList.add("splash-on");
+  if (reduce || !word.animate || !root.classList.contains("splash-on")) { done(); return; }
   splash.addEventListener("click", done);
   setTimeout(done, 6000);
   try { await Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1200))]); } catch {}
-  const letters = [..."каникулы"];
+  const letters = [...target.textContent.trim()];
   word.innerHTML = letters.map(ch => `<span class="l">${ch}</span>`).join("");
   const ls = [...word.children];
   const fit = word.getBoundingClientRect().width;
