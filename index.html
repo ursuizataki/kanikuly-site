@@ -70,7 +70,7 @@ nav.links .lang { font-family: var(--mono); font-size: 13px; text-transform: upp
 /* showreel */
 .reel { position: relative; background: var(--reel-bg); color: var(--reel-fg); overflow: hidden; }
 .reel-frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 16 / 9; max-height: 78vh; min-height: 300px; }
-.reel video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
+.reel video, .reel .reel-alt { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
 .reel-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.0) 35%, rgba(0,0,0,.55) 100%); pointer-events: none; }
 .reel-over { position: absolute; left: 0; right: 0; bottom: 0; }
 .reel-over .wrap { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; padding-block: clamp(16px, 3vw, 32px); }
@@ -862,16 +862,40 @@ tabs.forEach((t, i) => {
 });
 showService(0);
 
-/* Трейлер на первом экране. Если браузер не запустил его сам (например, режим энергосбережения на iPhone), показываем кадр и кнопку запуска */
+/* Если браузер не дал ролику запуститься самому (режим энергосбережения на iPhone), Safari всё равно крутит тот же mp4, вставленный как картинка */
+function imgFallback(vid, src) {
+  return new Promise(res => {
+    const img = new Image();
+    img.alt = ""; img.setAttribute("aria-hidden", "true");
+    img.onload = () => { vid.hidden = true; vid.after(img); res(img); };
+    img.onerror = () => res(null);
+    img.src = src;
+  });
+}
+document.querySelectorAll("#cases video").forEach(vid => {
+  const p = vid.play && vid.play();
+  if (p && p.catch) p.catch(() => { if (vid.paused) imgFallback(vid, vid.currentSrc || vid.src); });
+});
+
+/* Трейлер на первом экране. Если он не запустился сам, крутим его без звука как картинку; если и так нельзя, показываем кадр и кнопку запуска */
 const v = document.getElementById("reelVideo");
 const sound = document.getElementById("soundBtn");
 const playBtn = document.getElementById("playBtn");
+let heroImg = null, fallbackTried = false;
+const heroFallback = async () => {
+  if (fallbackTried || !v.paused) return;
+  fallbackTried = true;
+  heroImg = await imgFallback(v, "media/yeti/trailer-hero.mp4");
+  if (heroImg) { heroImg.className = "reel-alt"; sound.hidden = false; }
+  else if (v.paused) playBtn.hidden = false;
+};
 v.addEventListener("playing", () => { playBtn.hidden = true; sound.hidden = false; });
 const p = v.play && v.play();
-if (p && p.catch) p.catch(() => { if (v.paused) playBtn.hidden = false; });
-setTimeout(() => { if (v.paused) playBtn.hidden = false; }, 2500);
+if (p && p.catch) p.catch(heroFallback);
+setTimeout(heroFallback, 2500);
 playBtn.addEventListener("click", () => { v.play().catch(() => {}); });
 sound.addEventListener("click", () => {
+  if (heroImg) { heroImg.remove(); heroImg = null; v.hidden = false; v.muted = true; }
   v.muted = !v.muted;
   if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}); }
   sound.textContent = v.muted ? tr("со звуком", "sound on") : tr("без звука", "sound off");
