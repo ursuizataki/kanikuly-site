@@ -371,6 +371,23 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .panel.has-media.is-open::after { opacity: 0; }
 .panel.has-media.is-open > video { inset: auto; top: 50%; right: var(--gap); width: auto; height: var(--vh); aspect-ratio: 9 / 16; transform: translateY(-50%); border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.55); animation: vidIn .5s .12s both; }
 .panel.has-media.is-open .full { width: auto; right: calc(var(--vh) * 9 / 16 + var(--gap) * 2); max-width: 560px; justify-content: center; }
+/* six and more cases: the opened one takes most of the row, the video window shrinks with it, text never overflows the top */
+@media (min-width: 861px) {
+  #cases .panel.is-open { flex-grow: 9; }
+  #cases .panel { container-type: inline-size; }
+  #cases .panel.has-media.is-open > video { height: min(var(--vh), 38cqw * 16 / 9); }
+  #cases .panel.has-media.is-open .full { right: calc(min(var(--vh), 38cqw * 16 / 9) * 9 / 16 + var(--gap) * 2); justify-content: safe center; }
+  #cases .panel:not(.is-open) .chip { left: 10px; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+  @container (max-width: 760px) {
+    #cases .panel .tdr div { grid-template-columns: minmax(0, 1fr); gap: 2px; }
+    #cases .panel .tdr .k { padding-top: 0; }
+    #cases .panel .tdr, #cases .panel .trl { font-size: 14.5px; }
+    #cases .panel .full { gap: 12px; }
+  }
+  @container (max-width: 680px) { #cases .panel .trl { display: none; } }
+  @container (max-width: 560px) { #cases .panel .full { padding-top: 52px; padding-bottom: 14px; gap: 10px; } }
+  @container (max-width: 76px) { #cases .panel .short b { display: none; } }
+}
 @keyframes vidIn { from { opacity: 0; transform: translateY(-50%) scale(.94); } to { opacity: 1; transform: translateY(-50%) scale(1); } }
 @media (max-width: 860px) {
   .panel.is-open.has-media { height: auto; min-height: 0; }
@@ -593,6 +610,16 @@ const CASES = [
     res: "20+ млн", resNote: "просмотров рекламного контента. Охват серии больше 3 млн, +25 000 подписчиков.",
     video: "media/okean/loop.mp4", image: "", link: "",
     reels: [7, 1, 2, 3, 4, 5, 6].map(k => ({ src: `media/okean/okean${k}.mp4`, poster: `media/okean/okean${k}.jpg` })) },
+  { chip: "науч-поп", cover: "наука", bg: "var(--t-black)", fg: "#ffffff", client: "Океаномания", format: "ии-видео · серия",
+    title: "Науч-поп серия",
+    en: { chip: "pop science", client: "Okeanomania", format: "AI video · series", title: "Pop-science series",
+      task: "Tell the brand’s story through videos that are worth watching even without the ad.",
+      did: "Short pop-science videos about food in history: what Empress Cixi ate, what Elizabeth I was served and where crab sticks came from.",
+      res: "25M+", resNote: "views" },
+    task: "Рассказать о продуктах бренда через истории, которые интересно смотреть и без рекламы.",
+    did: "Короткие научно-популярные ролики о еде в истории: что ела императрица Цыси, чем угощали Елизавету I и откуда взялись крабовые палочки.",
+    res: "25+ млн", resNote: "просмотров", video: "media/okean/sci-loop.mp4", image: "", link: "",
+    reels: [1, 2, 3, 4].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) },
   { chip: "ии-реклама", cover: "3в1", bg: "#e3191c", fg: "#ffffff", client: "Океаномания", format: "ии-видео",
     title: "3 истории в 1 видео",
     en: { chip: "AI ad", client: "Okeanomania", format: "AI video", title: "3 stories in 1 video",
@@ -621,16 +648,6 @@ const CASES = [
     did: "Сняли TV-ролик о пижамной вечеринке в розовой комнате: попкорн, селфи, танцы и макияж, в котором продукты коллекции переходят из рук в руки.",
     res: "", resNote: "", video: "media/kitty/loop.mp4", image: "", link: "",
     reels: [{ src: "media/kitty/kitty.mp4", poster: "media/kitty/kitty.jpg", wide: true }] },
-  { chip: "науч-поп", cover: "наука", bg: "var(--t-black)", fg: "#ffffff", client: "Океаномания", format: "ии-видео · серия",
-    title: "Науч-поп серия",
-    en: { chip: "pop science", client: "Okeanomania", format: "AI video · series", title: "Pop-science series",
-      task: "Tell the brand’s story through videos that are worth watching even without the ad.",
-      did: "Short pop-science videos about food in history: what Empress Cixi ate, what Elizabeth I was served and where crab sticks came from.",
-      res: "25M+", resNote: "views" },
-    task: "Рассказать о продуктах бренда через истории, которые интересно смотреть и без рекламы.",
-    did: "Короткие научно-популярные ролики о еде в истории: что ела императрица Цыси, чем угощали Елизавету I и откуда взялись крабовые палочки.",
-    res: "25+ млн", resNote: "просмотров", video: "media/okean/sci-loop.mp4", image: "", link: "",
-    reels: [1, 2, 3, 4].map(k => ({ src: `media/okean/sci${k}.mp4`, poster: `media/okean/sci${k}.jpg` })) }
 ];
 
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
