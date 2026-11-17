@@ -57,6 +57,8 @@ section { padding-block: clamp(44px, 5.5vw, 76px); }
 
 /* header */
 header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 9; background: var(--paper); border-bottom: 1px solid var(--line); }
+/* solid strip above the stuck header: in-app browsers and Safari with the bar on top draw the page under their glass bar */
+header.top::before { content: ""; position: absolute; left: 0; right: 0; bottom: 100%; height: 100vh; background: var(--paper); pointer-events: none; }
 header.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; height: 64px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -0.03em; }
 .brand .logo { width: 42px; height: 34px; flex: none; background: currentColor; -webkit-mask: url(media/logo.png) center / contain no-repeat; mask: url(media/logo.png) center / contain no-repeat; }
