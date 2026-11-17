@@ -357,13 +357,13 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 .panel.has-media::after { transition: opacity .3s; }
 .panel.has-media.is-open { background: #111 !important; color: #fff !important; }
 .panel.has-media.is-open::after { opacity: 0; }
-.panel.has-media.is-open > video { inset: auto; top: 50%; right: var(--gap); width: auto; height: var(--vh); aspect-ratio: 9 / 16; transform: translateY(-50%); border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.55); animation: vidIn .5s .12s both; }
+.panel.has-media.is-open > :is(video, img) { inset: auto; top: 50%; right: var(--gap); width: auto; height: var(--vh); aspect-ratio: 9 / 16; transform: translateY(-50%); border-radius: 10px; box-shadow: 0 12px 40px rgba(0,0,0,.55); animation: vidIn .5s .12s both; }
 .panel.has-media.is-open .full { width: auto; right: calc(var(--vh) * 9 / 16 + var(--gap) * 2); max-width: 560px; justify-content: center; }
 /* six and more cases: the opened one takes most of the row, the video window shrinks with it, text never overflows the top */
 @media (min-width: 861px) {
   #cases .panel.is-open { flex-grow: 9; }
   #cases .panel { container-type: inline-size; }
-  #cases .panel.has-media.is-open > video { height: min(var(--vh), 38cqw * 16 / 9); }
+  #cases .panel.has-media.is-open > :is(video, img) { height: min(var(--vh), 38cqw * 16 / 9); }
   #cases .panel.has-media.is-open .full { right: calc(min(var(--vh), 38cqw * 16 / 9) * 9 / 16 + var(--gap) * 2); justify-content: safe center; }
   #cases .panel:not(.is-open) .chip { left: 10px; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
   @container (max-width: 760px) {
@@ -379,10 +379,10 @@ footer .wrap { display: flex; justify-content: space-between; gap: 16px; flex-wr
 @keyframes vidIn { from { opacity: 0; transform: translateY(-50%) scale(.94); } to { opacity: 1; transform: translateY(-50%) scale(1); } }
 @media (max-width: 860px) {
   .panel.is-open.has-media { height: auto; min-height: 0; }
-  .panel.has-media.is-open > video { position: relative; inset: auto; transform: none; display: block; width: min(64%, 280px); height: auto; margin: 56px auto 0; animation: none; }
+  .panel.has-media.is-open > :is(video, img) { position: relative; inset: auto; transform: none; display: block; width: min(64%, 280px); height: auto; margin: 56px auto 0; animation: none; }
   .panel.has-media.is-open .full { position: relative; right: auto; width: 100%; max-width: none; min-height: 0; padding: 20px 16px; }
 }
-@media (prefers-reduced-motion: reduce) { .panel.has-media.is-open > video { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .panel.has-media.is-open > :is(video, img) { animation: none; } }
 /* phones and tablets: cases as a swipeable strip of cards that snap into place,
    video on top without text over it, short text below */
 @media (max-width: 860px) {
